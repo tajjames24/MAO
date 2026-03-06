@@ -73,7 +73,7 @@ function ResultCard({ label, value, isHero, colorClass, testId, subtext, isDark 
   );
 }
 
-export default function Calculator({ onMenuClick, prefilledValues, isDark, onToggleDark }) {
+export default function Calculator({ prefilledValues, isDark, onToggleDark }) {
   const [inputs, setInputs] = useState(DEFAULT);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [savedDeals, setSavedDeals] = useState([]);
@@ -90,13 +90,17 @@ export default function Calculator({ onMenuClick, prefilledValues, isDark, onTog
   }, []);
 
   useEffect(() => {
-    if (prefilledValues?.arv) {
+    if (prefilledValues?.arv || prefilledValues?.repairCost) {
       setInputs(prev => ({
         ...prev,
-        arv: prefilledValues.arv,
+        ...(prefilledValues.arv ? { arv: prefilledValues.arv } : {}),
         ...(prefilledValues.repairCost ? { repairCost: prefilledValues.repairCost } : {}),
       }));
-      toast.success('ARV loaded from Comp Generator!');
+      if (prefilledValues.repairCost && !prefilledValues.arv) {
+        toast.success('Repair cost synced from Estimator!');
+      } else if (prefilledValues.arv) {
+        toast.success('Values loaded!');
+      }
     }
   }, [prefilledValues]);
 
