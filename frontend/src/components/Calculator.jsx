@@ -256,13 +256,13 @@ DEAL SCORE: ${(calcs.dealScore.label || 'N/A').toUpperCase()}
       {/* HEADER */}
       <header className="sticky top-0 z-50 bg-white border-b-2 border-[#E5E7EB]">
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-          {/* Buywise Logo */}
-          <div className="flex items-center gap-3">
-            <img
-              src="https://customer-assets.emergentagent.com/job_mao-finder/artifacts/xkcy0lym_IMG_7814.jpeg"
-              alt="Buywise"
-              className="h-11 w-auto object-contain"
-            />
+          <div className="flex items-center gap-2">
+            <span
+              className="text-2xl font-black text-[#FF7A00] tracking-tight"
+              style={{ fontFamily: 'Chivo, sans-serif' }}
+            >
+              BUYWISE
+            </span>
           </div>
           <button
             data-testid="saved-deals-header-btn"
