@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDealCalculator } from '../hooks/useDealCalculator';
 import {
   ChevronDown, ChevronUp, Save, RotateCcw,
-  BookOpen, Copy, FileText, X, Info, Menu
+  BookOpen, Copy, FileText, X, Info, Menu, Sun, Moon
 } from 'lucide-react';
 import { toast } from 'sonner';
 import jsPDF from 'jspdf';
@@ -32,19 +32,15 @@ const formatInput = (val) => {
   return parts.join('.');
 };
 
-function NumberInput({ label, value, onChange, placeholder, testId, hint }) {
+function NumberInput({ label, value, onChange, placeholder, testId, hint, isDark }) {
   return (
     <div className="space-y-1.5">
-      <label className="flex items-center gap-1 text-xs font-bold uppercase tracking-widest text-[#1A1A1A]">
+      <label className={`flex items-center gap-1 text-xs font-bold uppercase tracking-widest ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`}>
         {label}
-        {hint && (
-          <span title={hint} className="cursor-help">
-            <Info className="w-3 h-3 text-[#1A1A1A]/40" />
-          </span>
-        )}
+        {hint && <span title={hint} className="cursor-help"><Info className="w-3 h-3 opacity-40" /></span>}
       </label>
       <div className="relative">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-[#1A1A1A]/50 text-lg select-none">$</span>
+        <span className={`absolute left-4 top-1/2 -translate-y-1/2 font-bold text-lg select-none ${isDark ? 'text-white/40' : 'text-[#1A1A1A]/50'}`}>$</span>
         <input
           data-testid={testId}
           type="text"
@@ -52,48 +48,32 @@ function NumberInput({ label, value, onChange, placeholder, testId, hint }) {
           value={formatInput(value)}
           onChange={e => onChange(e.target.value.replace(/[^0-9.]/g, ''))}
           placeholder={placeholder || '0'}
-          className="w-full bg-[#FFE6CC] border-2 border-transparent focus:border-[#FF7A00] focus:outline-none text-[#1A1A1A] font-semibold text-lg py-3.5 pl-9 pr-4 rounded-md transition-all duration-150 placeholder:text-[#1A1A1A]/30"
+          className={`w-full border-2 border-transparent font-semibold text-lg py-3.5 pl-9 pr-4 rounded-md transition-all duration-150 focus:outline-none focus:border-[#FF7A00] placeholder:opacity-30 ${isDark ? 'bg-[#2C1A00] text-white placeholder:text-white' : 'bg-[#FFE6CC] text-[#1A1A1A] placeholder:text-[#1A1A1A]'}`}
         />
       </div>
     </div>
   );
 }
 
-function ResultCard({ label, value, isHero, colorClass, testId, subtext }) {
+function ResultCard({ label, value, isHero, colorClass, testId, subtext, isDark }) {
   if (isHero) {
     return (
-      <div
-        data-testid={testId}
-        className="bg-[#FF7A00] border-2 border-[#1A1A1A] p-6 shadow-[5px_5px_0px_0px_rgba(26,26,26,1)] transition-all duration-200"
-      >
+      <div data-testid={testId} className="bg-[#FF7A00] border-2 border-[#1A1A1A] p-6 shadow-[5px_5px_0px_0px_rgba(26,26,26,1)] transition-all duration-200">
         <p className="text-xs font-bold uppercase tracking-widest text-white/70 mb-1">{label}</p>
-        <p
-          className="font-black text-white leading-none"
-          style={{ fontFamily: 'Chivo, sans-serif', fontSize: 'clamp(2.2rem, 6vw, 3.75rem)' }}
-        >
-          {fmt(value)}
-        </p>
+        <p className="font-black text-white leading-none" style={{ fontFamily: 'Chivo, sans-serif', fontSize: 'clamp(2.2rem, 6vw, 3.75rem)' }}>{fmt(value)}</p>
         {subtext && <p className="text-white/60 text-sm mt-2 font-medium">{subtext}</p>}
       </div>
     );
   }
   return (
-    <div
-      data-testid={testId}
-      className="bg-white border-2 border-[#1A1A1A] p-4 shadow-[2px_2px_0px_0px_rgba(26,26,26,1)] transition-all duration-200"
-    >
-      <p className="text-xs font-bold uppercase tracking-widest text-[#1A1A1A]/50 mb-1 leading-tight">{label}</p>
-      <p
-        className={`font-black text-2xl md:text-3xl ${colorClass || 'text-[#1A1A1A]'}`}
-        style={{ fontFamily: 'Chivo, sans-serif' }}
-      >
-        {fmt(value)}
-      </p>
+    <div data-testid={testId} className={`border-2 p-4 shadow-[2px_2px_0px_0px_rgba(26,26,26,1)] transition-all duration-200 ${isDark ? 'bg-[#1E1E1E] border-[#333]' : 'bg-white border-[#1A1A1A]'}`}>
+      <p className={`text-xs font-bold uppercase tracking-widest mb-1 leading-tight ${isDark ? 'text-white/50' : 'text-[#1A1A1A]/50'}`}>{label}</p>
+      <p className={`font-black text-2xl md:text-3xl ${colorClass || (isDark ? 'text-white' : 'text-[#1A1A1A]')}`} style={{ fontFamily: 'Chivo, sans-serif' }}>{fmt(value)}</p>
     </div>
   );
 }
 
-export default function Calculator({ onMenuClick, prefilledValues }) {
+export default function Calculator({ onMenuClick, prefilledValues, isDark, onToggleDark }) {
   const [inputs, setInputs] = useState(DEFAULT);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [savedDeals, setSavedDeals] = useState([]);
@@ -269,39 +249,31 @@ DEAL SCORE: ${(calcs.dealScore.label || 'N/A').toUpperCase()}
   const hasValues = parseFloat(inputs.arv) > 0;
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: 'Inter, sans-serif' }}>
+    <div className={`min-h-screen transition-colors duration-200 ${isDark ? 'bg-[#111111]' : 'bg-white'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
 
-      {/* HEADER */}
-      <header className="sticky top-0 z-50 bg-white border-b-2 border-[#E5E7EB]">
+      <header className={`sticky top-0 z-50 border-b-2 transition-colors duration-200 ${isDark ? 'bg-[#111111] border-[#333]' : 'bg-white border-[#E5E7EB]'}`}>
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button
-              data-testid="calc-menu-btn"
-              onClick={onMenuClick}
-              className="p-1.5 hover:bg-[#FFF7ED] rounded transition-colors"
-            >
-              <Menu className="w-5 h-5 text-[#1A1A1A]" />
+            <button data-testid="calc-menu-btn" onClick={onMenuClick}
+              className={`p-1.5 rounded transition-colors ${isDark ? 'hover:bg-[#2C1A00] text-white' : 'hover:bg-[#FFF7ED]'}`}>
+              <Menu className="w-5 h-5" />
             </button>
-            <span
-              className="text-2xl font-black text-[#FF7A00] tracking-tight"
-              style={{ fontFamily: 'Chivo, sans-serif' }}
-            >
-              BUYWISE
-            </span>
+            <span className="text-2xl font-black text-[#FF7A00] tracking-tight" style={{ fontFamily: 'Chivo, sans-serif' }}>BUYWISE</span>
           </div>
-          <button
-            data-testid="saved-deals-header-btn"
-            onClick={() => setShowSavedDeals(true)}
-            className="flex items-center gap-2 text-sm font-bold text-[#1A1A1A] hover:text-[#FF7A00] transition-colors duration-150"
-          >
-            <BookOpen className="w-4 h-4" />
-            <span className="hidden sm:inline">Saved Deals</span>
-            {savedDeals.length > 0 && (
-              <span className="bg-[#FF7A00] text-white text-xs font-black w-5 h-5 rounded-full flex items-center justify-center">
-                {savedDeals.length}
-              </span>
-            )}
-          </button>
+          <div className="flex items-center gap-3">
+            <button data-testid="theme-toggle-btn" onClick={onToggleDark}
+              className={`p-2 rounded-full border-2 transition-all ${isDark ? 'border-[#333] text-yellow-400 hover:bg-[#2D2D2D]' : 'border-[#E5E7EB] text-[#1A1A1A] hover:bg-[#FFF7ED]'}`}>
+              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+            <button data-testid="saved-deals-header-btn" onClick={() => setShowSavedDeals(true)}
+              className={`flex items-center gap-2 text-sm font-bold transition-colors duration-150 ${isDark ? 'text-white hover:text-[#FF7A00]' : 'text-[#1A1A1A] hover:text-[#FF7A00]'}`}>
+              <BookOpen className="w-4 h-4" />
+              <span className="hidden sm:inline">Saved Deals</span>
+              {savedDeals.length > 0 && (
+                <span className="bg-[#FF7A00] text-white text-xs font-black w-5 h-5 rounded-full flex items-center justify-center">{savedDeals.length}</span>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -313,96 +285,46 @@ DEAL SCORE: ${(calcs.dealScore.label || 'N/A').toUpperCase()}
           <div className="space-y-5">
 
             {/* Core Inputs */}
-            <div className="bg-white border-2 border-[#1A1A1A] p-6 md:p-8 shadow-[4px_4px_0px_0px_rgba(26,26,26,1)]">
+            <div className={`border-2 p-6 md:p-8 shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] transition-colors duration-200 ${isDark ? 'bg-[#1E1E1E] border-[#333]' : 'bg-white border-[#1A1A1A]'}`}>
               <h2 className="text-xs font-bold uppercase tracking-widest text-[#FF7A00] mb-6">Property Inputs</h2>
               <div className="space-y-5">
-                <NumberInput
-                  label="After Repair Value (ARV)"
-                  value={inputs.arv}
-                  onChange={setField('arv')}
-                  placeholder="300,000"
-                  testId="arv-input"
-                  hint="The estimated market value after all repairs are complete"
-                />
-                <NumberInput
-                  label="Repair Cost"
-                  value={inputs.repairCost}
-                  onChange={setField('repairCost')}
-                  placeholder="30,000"
-                  testId="repair-cost-input"
-                  hint="Total estimated cost to repair/rehab the property"
-                />
-                <NumberInput
-                  label="Assignment Fee"
-                  value={inputs.assignmentFee}
-                  onChange={setField('assignmentFee')}
-                  placeholder="10,000"
-                  testId="assignment-fee-input"
-                  hint="Your wholesale fee for assigning the contract"
-                />
+                <NumberInput label="After Repair Value (ARV)" value={inputs.arv} onChange={setField('arv')} placeholder="300,000" testId="arv-input" hint="The estimated market value after all repairs are complete" isDark={isDark} />
+                <NumberInput label="Repair Cost" value={inputs.repairCost} onChange={setField('repairCost')} placeholder="30,000" testId="repair-cost-input" hint="Total estimated cost to repair/rehab the property" isDark={isDark} />
+                <NumberInput label="Assignment Fee" value={inputs.assignmentFee} onChange={setField('assignmentFee')} placeholder="10,000" testId="assignment-fee-input" hint="Your wholesale fee for assigning the contract" isDark={isDark} />
               </div>
             </div>
 
             {/* Advanced Options */}
-            <div className="border-2 border-[#1A1A1A] shadow-[2px_2px_0px_0px_rgba(26,26,26,1)]">
-              <button
-                data-testid="advanced-options-toggle"
-                onClick={() => setShowAdvanced(!showAdvanced)}
-                className="w-full flex items-center justify-between p-4 md:p-5 bg-white hover:bg-[#FFF7ED] transition-colors duration-150"
-              >
-                <span className="text-xs font-bold uppercase tracking-widest text-[#1A1A1A]">Advanced Options</span>
-                {showAdvanced
-                  ? <ChevronUp className="w-4 h-4 text-[#FF7A00]" />
-                  : <ChevronDown className="w-4 h-4" />
-                }
+            <div className={`border-2 shadow-[2px_2px_0px_0px_rgba(26,26,26,1)] ${isDark ? 'border-[#333]' : 'border-[#1A1A1A]'}`}>
+              <button data-testid="advanced-options-toggle" onClick={() => setShowAdvanced(!showAdvanced)}
+                className={`w-full flex items-center justify-between p-4 md:p-5 transition-colors duration-150 ${isDark ? 'bg-[#1E1E1E] hover:bg-[#2C1A00] text-white' : 'bg-white hover:bg-[#FFF7ED] text-[#1A1A1A]'}`}>
+                <span className="text-xs font-bold uppercase tracking-widest">Advanced Options</span>
+                {showAdvanced ? <ChevronUp className="w-4 h-4 text-[#FF7A00]" /> : <ChevronDown className="w-4 h-4" />}
               </button>
-
               {showAdvanced && (
-                <div className="border-t-2 border-[#1A1A1A] p-5 md:p-6 bg-[#FFFAF5] space-y-6">
-                  {/* ARV Rule Percentage */}
+                <div className={`border-t-2 p-5 md:p-6 space-y-6 ${isDark ? 'border-[#333] bg-[#161616]' : 'border-[#1A1A1A] bg-[#FFFAF5]'}`}>
                   <div className="space-y-2">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-[#1A1A1A]">
-                      ARV Rule Percentage
-                    </label>
+                    <label className={`block text-xs font-bold uppercase tracking-widest ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`}>ARV Rule Percentage</label>
                     <div className="flex items-center gap-4">
-                      <input
-                        data-testid="arv-rule-percent-slider"
-                        type="range"
-                        min="60"
-                        max="85"
-                        step="1"
-                        value={inputs.arvRulePercent || 70}
-                        onChange={e => setField('arvRulePercent')(e.target.value)}
-                        className="flex-1 h-2 accent-[#FF7A00] cursor-pointer"
-                      />
-                      <div
-                        className="bg-[#FF7A00] text-white px-3 py-2 min-w-[60px] text-center font-black border-2 border-[#1A1A1A]"
-                        style={{ fontFamily: 'Chivo, sans-serif' }}
-                        data-testid="arv-rule-percent-value"
-                      >
+                      <input data-testid="arv-rule-percent-slider" type="range" min="60" max="85" step="1"
+                        value={inputs.arvRulePercent || 70} onChange={e => setField('arvRulePercent')(e.target.value)}
+                        className="flex-1 h-2 accent-[#FF7A00] cursor-pointer" />
+                      <div className="bg-[#FF7A00] text-white px-3 py-2 min-w-[60px] text-center font-black border-2 border-[#1A1A1A]"
+                        style={{ fontFamily: 'Chivo, sans-serif' }} data-testid="arv-rule-percent-value">
                         {inputs.arvRulePercent || 70}%
                       </div>
                     </div>
-                    <p className="text-xs text-[#1A1A1A]/50">Standard: 70% — Adjust based on market conditions</p>
+                    <p className={`text-xs ${isDark ? 'text-white/40' : 'text-[#1A1A1A]/50'}`}>Standard: 70% — Adjust based on market conditions</p>
                   </div>
-
-                  {/* Negotiation Discount */}
                   <div className="space-y-2">
-                    <label className="block text-xs font-bold uppercase tracking-widest text-[#1A1A1A]">
-                      Negotiation Discount
-                    </label>
+                    <label className={`block text-xs font-bold uppercase tracking-widest ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`}>Negotiation Discount</label>
                     <div className="relative">
-                      <input
-                        data-testid="negotiation-discount-input"
-                        type="text"
-                        inputMode="numeric"
-                        value={inputs.negotiationDiscount}
-                        onChange={e => setField('negotiationDiscount')(e.target.value.replace(/[^0-9.]/g, ''))}
-                        className="w-full bg-[#FFE6CC] border-2 border-transparent focus:border-[#FF7A00] focus:outline-none text-[#1A1A1A] font-semibold text-lg py-3.5 pl-4 pr-10 rounded-md transition-all"
-                      />
-                      <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-[#1A1A1A]/50 text-lg">%</span>
+                      <input data-testid="negotiation-discount-input" type="text" inputMode="numeric"
+                        value={inputs.negotiationDiscount} onChange={e => setField('negotiationDiscount')(e.target.value.replace(/[^0-9.]/g, ''))}
+                        className={`w-full border-2 border-transparent focus:border-[#FF7A00] focus:outline-none font-semibold text-lg py-3.5 pl-4 pr-10 rounded-md transition-all ${isDark ? 'bg-[#2C1A00] text-white' : 'bg-[#FFE6CC] text-[#1A1A1A]'}`} />
+                      <span className={`absolute right-4 top-1/2 -translate-y-1/2 font-bold text-lg ${isDark ? 'text-white/40' : 'text-[#1A1A1A]/50'}`}>%</span>
                     </div>
-                    <p className="text-xs text-[#1A1A1A]/50">Used to calculate your First Offer (anchor strategy)</p>
+                    <p className={`text-xs ${isDark ? 'text-white/40' : 'text-[#1A1A1A]/50'}`}>Used to calculate your First Offer (anchor strategy)</p>
                   </div>
                 </div>
               )}
@@ -474,186 +396,90 @@ DEAL SCORE: ${(calcs.dealScore.label || 'N/A').toUpperCase()}
               )}
             </div>
 
-            {/* MAO — Hero */}
-            <ResultCard
-              label="Maximum Allowable Offer (MAO)"
-              value={calcs.mao}
-              isHero
-              testId="mao-result"
-              subtext={hasValues ? `Your max bid to ensure profitability` : null}
-            />
-
-            {/* 2-col grid */}
+            <ResultCard label="Maximum Allowable Offer (MAO)" value={calcs.mao} isHero testId="mao-result" subtext={hasValues ? `Your max bid to ensure profitability` : null} />
             <div className="grid grid-cols-2 gap-3">
-              <ResultCard label="70% Rule Value" value={calcs.rule70} testId="rule70-result" />
-              <ResultCard label="First Offer (Anchor)" value={calcs.firstOffer} testId="first-offer-result" colorClass="text-[#FF7A00]" />
-              <ResultCard label="Buyer Max Price" value={calcs.buyerPrice} testId="buyer-price-result" />
-              <ResultCard label="Assignment Fee" value={parseFloat(inputs.assignmentFee) || 0} testId="assignment-fee-display" />
+              <ResultCard label="70% Rule Value" value={calcs.rule70} testId="rule70-result" isDark={isDark} />
+              <ResultCard label="First Offer (Anchor)" value={calcs.firstOffer} testId="first-offer-result" colorClass="text-[#FF7A00]" isDark={isDark} />
+              <ResultCard label="Buyer Max Price" value={calcs.buyerPrice} testId="buyer-price-result" isDark={isDark} />
+              <ResultCard label="Assignment Fee" value={parseFloat(inputs.assignmentFee) || 0} testId="assignment-fee-display" isDark={isDark} />
             </div>
 
-            {/* Investor Profit — wide card */}
-            <div
-              data-testid="investor-profit-result"
-              className="bg-white border-2 border-[#1A1A1A] p-5 shadow-[2px_2px_0px_0px_rgba(26,26,26,1)]"
-            >
+            <div data-testid="investor-profit-result" className={`border-2 p-5 shadow-[2px_2px_0px_0px_rgba(26,26,26,1)] ${isDark ? 'bg-[#1E1E1E] border-[#333]' : 'bg-white border-[#1A1A1A]'}`}>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#1A1A1A]/50 mb-1">Investor Profit Estimate</p>
-                  <p
-                    className={`font-black leading-none ${
-                      calcs.dealScore.color === 'green' ? 'text-green-600' :
-                      calcs.dealScore.color === 'red'   ? 'text-red-600'   :
-                      calcs.dealScore.color === 'yellow' ? 'text-yellow-600' :
-                      'text-[#1A1A1A]'
-                    }`}
-                    style={{ fontFamily: 'Chivo, sans-serif', fontSize: 'clamp(1.75rem, 4vw, 2.5rem)' }}
-                    data-testid="investor-profit-value"
-                  >
+                  <p className={`text-xs font-bold uppercase tracking-widest mb-1 ${isDark ? 'text-white/50' : 'text-[#1A1A1A]/50'}`}>Investor Profit Estimate</p>
+                  <p className={`font-black leading-none ${calcs.dealScore.color === 'green' ? 'text-green-500' : calcs.dealScore.color === 'red' ? 'text-red-500' : calcs.dealScore.color === 'yellow' ? 'text-yellow-500' : isDark ? 'text-white' : 'text-[#1A1A1A]'}`}
+                    style={{ fontFamily: 'Chivo, sans-serif', fontSize: 'clamp(1.75rem, 4vw, 2.5rem)' }} data-testid="investor-profit-value">
                     {fmt(calcs.investorProfit)}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#1A1A1A]/50 mb-1">Formula</p>
-                  <p className="text-xs text-[#1A1A1A]/60 font-mono leading-snug">
-                    ARV − MAO − Repairs
-                  </p>
+                  <p className={`text-xs font-bold uppercase tracking-widest mb-1 ${isDark ? 'text-white/50' : 'text-[#1A1A1A]/50'}`}>Formula</p>
+                  <p className={`text-xs font-mono leading-snug ${isDark ? 'text-white/40' : 'text-[#1A1A1A]/60'}`}>ARV − MAO − Repairs</p>
                 </div>
               </div>
             </div>
-
-            {/* Score legend */}
-            <div className="border border-[#E5E7EB] p-4 bg-[#FAFAFA]">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#1A1A1A]/50 mb-3">Deal Score Guide</p>
+            <div className={`border p-4 ${isDark ? 'border-[#2D2D2D] bg-[#161616]' : 'border-[#E5E7EB] bg-[#FAFAFA]'}`}>
+              <p className={`text-xs font-bold uppercase tracking-widest mb-3 ${isDark ? 'text-white/40' : 'text-[#1A1A1A]/50'}`}>Deal Score Guide</p>
               <div className="flex flex-col sm:flex-row gap-2 text-xs font-medium">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-500 shrink-0" />
-                  <span className="text-[#1A1A1A]/70">Excellent: Profit &ge;25% ARV &amp; Repairs &le;25%</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-yellow-500 shrink-0" />
-                  <span className="text-[#1A1A1A]/70">Average: Profit &ge;15% &amp; Repairs &le;40%</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500 shrink-0" />
-                  <span className="text-[#1A1A1A]/70">Bad: Otherwise</span>
-                </div>
+                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-green-500 shrink-0" /><span className={isDark ? 'text-white/60' : 'text-[#1A1A1A]/70'}>Excellent: Profit ≥25% ARV &amp; Repairs ≤25%</span></div>
+                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-yellow-500 shrink-0" /><span className={isDark ? 'text-white/60' : 'text-[#1A1A1A]/70'}>Average: Profit ≥15% &amp; Repairs ≤40%</span></div>
+                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500 shrink-0" /><span className={isDark ? 'text-white/60' : 'text-[#1A1A1A]/70'}>Bad: Otherwise</span></div>
               </div>
             </div>
           </div>
         </div>
       </main>
 
-      {/* ─── SAVE DEAL MODAL ─── */}
       {showSaveModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowSaveModal(false)}>
-          <div
-            className="bg-white border-2 border-[#1A1A1A] p-6 w-full max-w-md shadow-[6px_6px_0px_0px_rgba(26,26,26,1)]"
-            onClick={e => e.stopPropagation()}
-          >
+          <div className={`border-2 p-6 w-full max-w-md shadow-[6px_6px_0px_0px_rgba(26,26,26,1)] ${isDark ? 'bg-[#1E1E1E] border-[#333]' : 'bg-white border-[#1A1A1A]'}`} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
-              <h3 className="font-black text-xl text-[#1A1A1A]" style={{ fontFamily: 'Chivo, sans-serif' }}>Save Deal</h3>
-              <button data-testid="close-save-modal-btn" onClick={() => setShowSaveModal(false)} className="p-1 hover:text-[#FF7A00] transition-colors">
-                <X className="w-5 h-5" />
-              </button>
+              <h3 className={`font-black text-xl ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`} style={{ fontFamily: 'Chivo, sans-serif' }}>Save Deal</h3>
+              <button data-testid="close-save-modal-btn" onClick={() => setShowSaveModal(false)} className="p-1 hover:text-[#FF7A00] transition-colors"><X className="w-5 h-5" /></button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-[#1A1A1A] mb-2">Deal Name</label>
-                <input
-                  data-testid="deal-name-input"
-                  type="text"
-                  value={dealName}
-                  onChange={e => setDealName(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && confirmSave()}
-                  className="w-full bg-[#FFE6CC] border-2 border-transparent focus:border-[#FF7A00] focus:outline-none text-[#1A1A1A] font-semibold py-3 px-4 rounded-md"
-                  autoFocus
-                />
+                <label className={`block text-xs font-bold uppercase tracking-widest mb-2 ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`}>Deal Name</label>
+                <input data-testid="deal-name-input" type="text" value={dealName} onChange={e => setDealName(e.target.value)} onKeyDown={e => e.key === 'Enter' && confirmSave()}
+                  className={`w-full border-2 border-transparent focus:border-[#FF7A00] focus:outline-none font-semibold py-3 px-4 rounded-md ${isDark ? 'bg-[#2C1A00] text-white' : 'bg-[#FFE6CC] text-[#1A1A1A]'}`} autoFocus />
               </div>
-              <div className="bg-[#FFF7ED] border border-[#FFE6CC] p-3 space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-[#1A1A1A]/60">MAO</span>
-                  <strong className="text-[#FF7A00]">{fmt(calcs.mao)}</strong>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#1A1A1A]/60">Score</span>
-                  <strong className={ss.text}>{calcs.dealScore.label || 'N/A'}</strong>
-                </div>
+              <div className={`border p-3 space-y-1 text-sm ${isDark ? 'bg-[#161616] border-[#2D2D2D]' : 'bg-[#FFF7ED] border-[#FFE6CC]'}`}>
+                <div className="flex justify-between"><span className={isDark ? 'text-white/50' : 'text-[#1A1A1A]/60'}>MAO</span><strong className="text-[#FF7A00]">{fmt(calcs.mao)}</strong></div>
+                <div className="flex justify-between"><span className={isDark ? 'text-white/50' : 'text-[#1A1A1A]/60'}>Score</span><strong className={ss.text}>{calcs.dealScore.label || 'N/A'}</strong></div>
               </div>
               <div className="flex gap-3 pt-1">
-                <button
-                  data-testid="confirm-save-btn"
-                  onClick={confirmSave}
-                  className="flex-1 bg-[#FF7A00] text-white font-bold uppercase tracking-wider py-3 border-2 border-[#1A1A1A] shadow-[3px_3px_0px_0px_rgba(26,26,26,1)] hover:bg-[#E66E00] active:shadow-none transition-all text-sm"
-                >
-                  Save Deal
-                </button>
-                <button
-                  onClick={() => setShowSaveModal(false)}
-                  className="px-6 bg-white text-[#1A1A1A] font-bold uppercase tracking-wider py-3 border-2 border-[#1A1A1A] hover:bg-gray-50 transition-all text-sm"
-                >
-                  Cancel
-                </button>
+                <button data-testid="confirm-save-btn" onClick={confirmSave} className="flex-1 bg-[#FF7A00] text-white font-bold uppercase tracking-wider py-3 border-2 border-[#1A1A1A] shadow-[3px_3px_0px_0px_rgba(26,26,26,1)] hover:bg-[#E66E00] active:shadow-none transition-all text-sm">Save Deal</button>
+                <button onClick={() => setShowSaveModal(false)} className={`px-6 font-bold uppercase tracking-wider py-3 border-2 transition-all text-sm ${isDark ? 'bg-[#1E1E1E] text-white border-[#333] hover:bg-[#2D2D2D]' : 'bg-white text-[#1A1A1A] border-[#1A1A1A] hover:bg-gray-50'}`}>Cancel</button>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* ─── SAVED DEALS MODAL ─── */}
       {showSavedDeals && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowSavedDeals(false)}>
-          <div
-            className="bg-white border-2 border-[#1A1A1A] w-full max-w-2xl max-h-[80vh] flex flex-col shadow-[6px_6px_0px_0px_rgba(26,26,26,1)]"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between p-5 border-b-2 border-[#1A1A1A]">
-              <h3 className="font-black text-xl text-[#1A1A1A]" style={{ fontFamily: 'Chivo, sans-serif' }}>
-                Saved Deals <span className="text-[#FF7A00]">({savedDeals.length})</span>
-              </h3>
-              <button data-testid="close-saved-deals-btn" onClick={() => setShowSavedDeals(false)} className="p-1 hover:text-[#FF7A00] transition-colors">
-                <X className="w-5 h-5" />
-              </button>
+          <div className={`border-2 w-full max-w-2xl max-h-[80vh] flex flex-col shadow-[6px_6px_0px_0px_rgba(26,26,26,1)] ${isDark ? 'bg-[#1E1E1E] border-[#333]' : 'bg-white border-[#1A1A1A]'}`} onClick={e => e.stopPropagation()}>
+            <div className={`flex items-center justify-between p-5 border-b-2 ${isDark ? 'border-[#333]' : 'border-[#1A1A1A]'}`}>
+              <h3 className={`font-black text-xl ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`} style={{ fontFamily: 'Chivo, sans-serif' }}>Saved Deals <span className="text-[#FF7A00]">({savedDeals.length})</span></h3>
+              <button data-testid="close-saved-deals-btn" onClick={() => setShowSavedDeals(false)} className="p-1 hover:text-[#FF7A00] transition-colors"><X className="w-5 h-5" /></button>
             </div>
             <div className="overflow-y-auto flex-1 p-4 space-y-3">
               {savedDeals.length === 0 ? (
-                <div className="text-center py-16">
-                  <BookOpen className="w-10 h-10 text-[#1A1A1A]/20 mx-auto mb-3" />
-                  <p className="text-[#1A1A1A]/40 font-medium">No saved deals yet.</p>
-                  <p className="text-[#1A1A1A]/30 text-sm">Analyze and save your first deal!</p>
-                </div>
+                <div className="text-center py-16"><BookOpen className={`w-10 h-10 mx-auto mb-3 ${isDark ? 'text-white/20' : 'text-[#1A1A1A]/20'}`} /><p className={`font-medium ${isDark ? 'text-white/40' : 'text-[#1A1A1A]/40'}`}>No saved deals yet.</p></div>
               ) : (
                 savedDeals.map(deal => {
-                  const dss = SCORE_STYLES[
-                    deal.dealScore === 'Excellent Deal' ? 'green' :
-                    deal.dealScore === 'Average Deal'  ? 'yellow' : 'red'
-                  ] || SCORE_STYLES.gray;
+                  const dss = SCORE_STYLES[deal.dealScore === 'Excellent Deal' ? 'green' : deal.dealScore === 'Average Deal' ? 'yellow' : 'red'] || SCORE_STYLES.gray;
                   return (
-                    <div
-                      key={deal.id}
-                      data-testid={`saved-deal-item`}
-                      className="border-2 border-[#1A1A1A] p-4 flex items-center justify-between hover:bg-[#FFF7ED] transition-colors"
-                    >
+                    <div key={deal.id} data-testid="saved-deal-item" className={`border-2 p-4 flex items-center justify-between transition-colors ${isDark ? 'border-[#333] hover:bg-[#2C1A00]' : 'border-[#1A1A1A] hover:bg-[#FFF7ED]'}`}>
                       <div className="min-w-0">
-                        <p className="font-bold text-[#1A1A1A] truncate">{deal.name}</p>
-                        <p className="text-xs text-[#1A1A1A]/50">{new Date(deal.date).toLocaleDateString()}</p>
-                        <p className="text-sm mt-0.5">
-                          MAO: <strong className="text-[#FF7A00]" style={{ fontFamily: 'Chivo, sans-serif' }}>{fmt(deal.mao)}</strong>
-                          {deal.investorProfit != null && (
-                            <span className="text-[#1A1A1A]/50 ml-2">· Profit: {fmt(deal.investorProfit)}</span>
-                          )}
-                        </p>
+                        <p className={`font-bold truncate ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`}>{deal.name}</p>
+                        <p className={`text-xs ${isDark ? 'text-white/40' : 'text-[#1A1A1A]/50'}`}>{new Date(deal.date).toLocaleDateString()}</p>
+                        <p className="text-sm mt-0.5">MAO: <strong className="text-[#FF7A00]" style={{ fontFamily: 'Chivo, sans-serif' }}>{fmt(deal.mao)}</strong></p>
                       </div>
                       <div className="flex items-center gap-3 shrink-0 ml-3">
-                        <span className={`text-xs font-bold uppercase px-2 py-1 border ${dss.border} ${dss.bg} ${dss.text}`}>
-                          {deal.dealScore || 'N/A'}
-                        </span>
-                        <button
-                          data-testid="delete-deal-btn"
-                          onClick={() => deleteDeal(deal.id)}
-                          className="p-1.5 hover:bg-red-50 hover:text-red-600 rounded transition-colors"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
+                        <span className={`text-xs font-bold uppercase px-2 py-1 border ${dss.border} ${dss.bg} ${dss.text}`}>{deal.dealScore || 'N/A'}</span>
+                        <button data-testid="delete-deal-btn" onClick={() => deleteDeal(deal.id)} className="p-1.5 hover:bg-red-50 hover:text-red-600 rounded transition-colors"><X className="w-4 h-4" /></button>
                       </div>
                     </div>
                   );

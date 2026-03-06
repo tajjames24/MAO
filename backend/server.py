@@ -69,6 +69,10 @@ JSON SCHEMA (return exactly this structure):
 class CompRequest(BaseModel):
     address: str
     repair_cost: Optional[float] = 0.0
+    beds: Optional[int] = None
+    baths: Optional[float] = None
+    sqft: Optional[int] = None
+    year_built: Optional[int] = None
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
@@ -155,8 +159,19 @@ async def generate_comps(request: CompRequest):
         prompt = (
             f"Property Address: {address}\n"
             f"Repair Cost Estimate: ${repair_cost:,.0f}\n"
-            + (real_data_context if real_data_context
-               else "\nNo real MLS data — generate realistic comp estimates based on your knowledge of this market.")
+        )
+        # Include confirmed property details if provided
+        confirmed = []
+        if request.beds:       confirmed.append(f"Bedrooms: {request.beds}")
+        if request.baths:      confirmed.append(f"Bathrooms: {request.baths}")
+        if request.sqft:       confirmed.append(f"Square Footage: {request.sqft} sqft")
+        if request.year_built: confirmed.append(f"Year Built: {request.year_built}")
+        if confirmed:
+            prompt += "\nCONFIRMED PROPERTY DETAILS (use these exact values for the subject property — do NOT change them):\n"
+            prompt += "\n".join(f"- {d}" for d in confirmed) + "\n"
+        prompt += (
+            (real_data_context if real_data_context
+             else "\nNo real MLS data — generate realistic comp estimates based on your knowledge of this market.")
             + "\n\nReturn ONLY raw JSON, no markdown."
         )
 

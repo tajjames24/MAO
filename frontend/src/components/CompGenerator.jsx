@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { MapPin, Search, ArrowRight, AlertCircle, Menu, Info } from 'lucide-react';
+import { MapPin, Search, ArrowRight, AlertCircle, Menu, Info, Sun, Moon, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -53,9 +53,14 @@ function MetricCard({ label, value }) {
   );
 }
 
-export default function CompGenerator({ onMenuClick, onUseInCalculator }) {
+export default function CompGenerator({ onMenuClick, onUseInCalculator, isDark, onToggleDark }) {
   const [address, setAddress]           = useState('');
   const [repairCost, setRepairCost]     = useState('');
+  const [beds, setBeds]                 = useState('');
+  const [baths, setBaths]               = useState('');
+  const [sqft, setSqft]                 = useState('');
+  const [yearBuilt, setYearBuilt]       = useState('');
+  const [showDetails, setShowDetails]   = useState(false);
   const [loading, setLoading]           = useState(false);
   const [step, setStep]                 = useState(0);
   const [results, setResults]           = useState(null);
@@ -165,6 +170,10 @@ export default function CompGenerator({ onMenuClick, onUseInCalculator }) {
       const { data } = await axios.post(`${API}/comps/generate`, {
         address: address.trim(),
         repair_cost: parseFloat(repairCost.replace(/,/g, '')) || 0,
+        beds:       beds       ? parseInt(beds)       : undefined,
+        baths:      baths      ? parseFloat(baths)    : undefined,
+        sqft:       sqft       ? parseInt(sqft.replace(/,/g, '')) : undefined,
+        year_built: yearBuilt  ? parseInt(yearBuilt)  : undefined,
       }, { timeout: 90000 });
       setResults(data);
     } catch (err) {

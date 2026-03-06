@@ -3,7 +3,7 @@
 ## Overview
 A quick deal analyzer for real estate wholesalers to calculate maximum offer prices in under 60 seconds.
 
-**App URL:** https://mao-finder.preview.emergentagent.com
+**App URL:** https://buywise-calc.preview.emergentagent.com
 
 ---
 
