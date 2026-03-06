@@ -36,19 +36,9 @@ NOTE_DISPLAY = {
     'F': 'F', 'F#': 'F#', 'G': 'G', 'G#': 'Ab', 'A': 'A', 'A#': 'Bb', 'B': 'B'
 }
 
-# Krumhansl-Schmuckler key profiles
+# Krumhansl-Schmuckler profiles (C major / C natural minor as root)
 MAJOR_PROFILE = np.array([6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88])
 MINOR_PROFILE  = np.array([6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17])
-
-HARMONIC_MINOR = MINOR_PROFILE.copy()
-HARMONIC_MINOR[11] += 2.0
-HARMONIC_MINOR[10] -= 1.0
-
-MELODIC_MINOR = MINOR_PROFILE.copy()
-MELODIC_MINOR[9]  += 1.5
-MELODIC_MINOR[11] += 2.0
-MELODIC_MINOR[8]  -= 0.5
-MELODIC_MINOR[10] -= 0.5
 
 # Camelot wheel: note_index -> (major_code, minor_code)
 CAMELOT_BY_NOTE = [
@@ -79,21 +69,65 @@ CAMELOT_REVERSE = {
 
 # ── Analysis Functions ────────────────────────────────────────────────────
 
+def _correlate(chroma: np.ndarray, profile: np.ndarray) -> float:
+    """Pearson correlation, returns -1 on degenerate input."""
+    c = np.corrcoef(chroma, profile)[0, 1]
+    return float(c) if not np.isnan(c) else -1.0
+
+
 def detect_key_and_scale(chroma_mean: np.ndarray):
-    profiles = {
-        'Major':         MAJOR_PROFILE,
-        'Minor':         MINOR_PROFILE,
-        'Harmonic Minor': HARMONIC_MINOR,
-        'Melodic Minor':  MELODIC_MINOR,
-    }
-    best_corr, best_key, best_scale = -np.inf, 0, 'Major'
-    for scale_name, profile in profiles.items():
-        for i in range(12):
-            corr = np.corrcoef(chroma_mean, np.roll(profile, i))[0, 1]
-            if not np.isnan(corr) and corr > best_corr:
-                best_corr, best_key, best_scale = corr, i, scale_name
-    confidence = int(min(100, max(0, (best_corr + 1) / 2 * 100)))
-    return best_key, best_scale, confidence
+    """
+    Two-stage detection:
+      Stage 1 – find root note + major/minor using KS profiles only.
+      Stage 2 – if minor, distinguish Natural / Harmonic / Melodic
+                by inspecting the b6 vs nat6 and b7 vs nat7 energies.
+    """
+    # Stage 1: standard KS — 24 hypotheses (2 modes × 12 keys)
+    best_corr, best_key, best_is_major = -np.inf, 0, True
+    corrs = []
+    for i in range(12):
+        r_maj = _correlate(chroma_mean, np.roll(MAJOR_PROFILE, i))
+        r_min = _correlate(chroma_mean, np.roll(MINOR_PROFILE, i))
+        corrs += [r_maj, r_min]
+        if r_maj > best_corr:
+            best_corr, best_key, best_is_major = r_maj, i, True
+        if r_min > best_corr:
+            best_corr, best_key, best_is_major = r_min, i, False
+
+    # Confidence: gap between best and second-best, mapped to 0-100
+    sorted_corrs = sorted(corrs, reverse=True)
+    gap = sorted_corrs[0] - sorted_corrs[1]
+    confidence = int(min(99, max(30, 50 + gap * 200)))
+
+    # Stage 2: minor variant
+    if best_is_major:
+        scale = 'Major'
+    else:
+        scale = _minor_variant(chroma_mean, best_key)
+
+    return best_key, scale, confidence
+
+
+def _minor_variant(chroma_mean: np.ndarray, key_idx: int) -> str:
+    """Determine Natural / Harmonic / Melodic Minor from scale-degree energy."""
+    # Rotate so the root is at index 0
+    rot = np.roll(chroma_mean, -key_idx)
+    total = rot.sum()
+    if total < 1e-6:
+        return 'Minor'
+    rot = rot / total
+
+    # Degree indices relative to root (chromatic semitones)
+    b6  = rot[8]   # b6 — present in Natural + Harmonic minor
+    n6  = rot[9]   # natural 6 — raised in Melodic minor
+    b7  = rot[10]  # b7 — present in Natural minor
+    n7  = rot[11]  # natural 7 (leading tone) — raised in Harmonic + Melodic minor
+
+    if n6 > b6 and n7 > b7:
+        return 'Melodic Minor'
+    if n7 > b7:
+        return 'Harmonic Minor'
+    return 'Minor'
 
 
 def get_camelot_code(note_idx: int, scale_type: str) -> str:
@@ -123,12 +157,25 @@ async def analyze_audio_file(file_path: str, filename: str) -> dict:
     logger.info(f"Analyzing: {filename}")
     y, sr = librosa.load(file_path, mono=True, duration=180)
 
+    # BPM on full signal (needs transients)
     tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
     bpm = float(np.atleast_1d(tempo)[0])
     duration = float(librosa.get_duration(y=y, sr=sr))
 
-    chroma = librosa.feature.chroma_cqt(y=y, sr=sr, bins_per_octave=36)
-    chroma_mean = np.mean(chroma, axis=1)
+    # ── Harmonic / Percussive Source Separation ────────────────────────
+    # Remove drums/transients before pitch analysis — major accuracy boost
+    y_harmonic, _ = librosa.effects.hpss(y, margin=3.0)
+
+    # ── Dual chroma for robustness ─────────────────────────────────────
+    # chroma_cens: robust to timbre/dynamics — best for key detection
+    # chroma_cqt:  captures harmonic detail — good secondary signal
+    hop = 512
+    cens = librosa.feature.chroma_cens(y=y_harmonic, sr=sr, hop_length=hop)
+    cqt  = librosa.feature.chroma_cqt(y=y_harmonic, sr=sr, hop_length=hop,
+                                       bins_per_octave=36)
+
+    # Weight CENS 60 / CQT 40 — CENS is proven more reliable for key ID
+    chroma_mean = 0.6 * np.mean(cens, axis=1) + 0.4 * np.mean(cqt, axis=1)
 
     key_idx, scale_type, confidence = detect_key_and_scale(chroma_mean)
     note = NOTE_NAMES[key_idx]
