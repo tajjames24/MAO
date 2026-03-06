@@ -164,18 +164,26 @@ async def analyze_audio_file(file_path: str, filename: str) -> dict:
 
     # ── Harmonic / Percussive Source Separation ────────────────────────
     # Remove drums/transients before pitch analysis — major accuracy boost
-    y_harmonic, _ = librosa.effects.hpss(y, margin=3.0)
+    try:
+        y_harmonic, _ = librosa.effects.hpss(y, margin=3.0)
+        # If HPSS produces near-silence (e.g. pure tone), fall back
+        if np.max(np.abs(y_harmonic)) < 1e-8:
+            y_harmonic = y
+    except Exception as e:
+        logger.warning(f"HPSS failed ({e}), using original signal")
+        y_harmonic = y
 
     # ── Dual chroma for robustness ─────────────────────────────────────
-    # chroma_cens: robust to timbre/dynamics — best for key detection
-    # chroma_cqt:  captures harmonic detail — good secondary signal
     hop = 512
-    cens = librosa.feature.chroma_cens(y=y_harmonic, sr=sr, hop_length=hop)
-    cqt  = librosa.feature.chroma_cqt(y=y_harmonic, sr=sr, hop_length=hop,
-                                       bins_per_octave=36)
-
-    # Weight CENS 60 / CQT 40 — CENS is proven more reliable for key ID
-    chroma_mean = 0.6 * np.mean(cens, axis=1) + 0.4 * np.mean(cqt, axis=1)
+    try:
+        cens = librosa.feature.chroma_cens(y=y_harmonic, sr=sr, hop_length=hop)
+        cqt  = librosa.feature.chroma_cqt(y=y_harmonic, sr=sr, hop_length=hop,
+                                           bins_per_octave=36)
+        chroma_mean = 0.6 * np.mean(cens, axis=1) + 0.4 * np.mean(cqt, axis=1)
+    except Exception as e:
+        logger.warning(f"CENS/CQT failed ({e}), falling back to STFT chroma")
+        chroma = librosa.feature.chroma_stft(y=y_harmonic, sr=sr, hop_length=hop)
+        chroma_mean = np.mean(chroma, axis=1)
 
     key_idx, scale_type, confidence = detect_key_and_scale(chroma_mean)
     note = NOTE_NAMES[key_idx]
@@ -212,7 +220,7 @@ class TrackAnalysis(BaseModel):
 
 # ── Routes ────────────────────────────────────────────────────────────────
 
-ALLOWED_EXTENSIONS = {'.mp3', '.wav', '.m4a'}
+ALLOWED_EXTENSIONS = {'.mp3', '.wav', '.m4a', '.webm', '.ogg'}
 
 
 @api_router.post("/analyze")

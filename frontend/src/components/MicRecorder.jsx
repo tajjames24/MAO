@@ -32,7 +32,7 @@ export default function MicRecorder({ onResult, onClose, apiUrl }) {
         const blobUrl = URL.createObjectURL(blob);
 
         const formData = new FormData();
-        formData.append("file", blob, "recording.wav");
+        formData.append("file", blob, "recording.webm");
 
         try {
           const { data } = await axios.post(apiUrl, formData, {
