@@ -253,37 +253,21 @@ DEAL SCORE: ${(calcs.dealScore.label || 'N/A').toUpperCase()}
   const hasValues = parseFloat(inputs.arv) > 0;
 
   return (
-    <div className={`min-h-screen transition-colors duration-200 ${isDark ? 'bg-[#111111]' : 'bg-white'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+    <div style={{ fontFamily: 'Inter, sans-serif' }}>
+      {/* Saved Deals Button - Floating */}
+      <div className="flex justify-end mb-4">
+        <button data-testid="saved-deals-header-btn" onClick={() => setShowSavedDeals(true)}
+          className={`flex items-center gap-2 text-sm font-bold transition-colors duration-150 ${isDark ? 'text-white hover:text-[#FF7A00]' : 'text-[#1A1A1A] hover:text-[#FF7A00]'}`}>
+          <BookOpen className="w-4 h-4" />
+          <span className="hidden sm:inline">Saved Deals</span>
+          {savedDeals.length > 0 && (
+            <span className="bg-[#FF7A00] text-white text-xs font-black w-5 h-5 rounded-full flex items-center justify-center">{savedDeals.length}</span>
+          )}
+        </button>
+      </div>
 
-      <header className={`sticky top-0 z-50 border-b-2 transition-colors duration-200 ${isDark ? 'bg-[#111111] border-[#333]' : 'bg-white border-[#E5E7EB]'}`}>
-        <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button data-testid="calc-menu-btn" onClick={onMenuClick}
-              className={`p-1.5 rounded transition-colors ${isDark ? 'hover:bg-[#2C1A00] text-white' : 'hover:bg-[#FFF7ED]'}`}>
-              <Menu className="w-5 h-5" />
-            </button>
-            <span className="text-2xl font-black text-[#FF7A00] tracking-tight" style={{ fontFamily: 'Chivo, sans-serif' }}>BUYWISE</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <button data-testid="theme-toggle-btn" onClick={onToggleDark}
-              className={`p-2 rounded-full border-2 transition-all ${isDark ? 'border-[#333] text-yellow-400 hover:bg-[#2D2D2D]' : 'border-[#E5E7EB] text-[#1A1A1A] hover:bg-[#FFF7ED]'}`}>
-              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
-            <button data-testid="saved-deals-header-btn" onClick={() => setShowSavedDeals(true)}
-              className={`flex items-center gap-2 text-sm font-bold transition-colors duration-150 ${isDark ? 'text-white hover:text-[#FF7A00]' : 'text-[#1A1A1A] hover:text-[#FF7A00]'}`}>
-              <BookOpen className="w-4 h-4" />
-              <span className="hidden sm:inline">Saved Deals</span>
-              {savedDeals.length > 0 && (
-                <span className="bg-[#FF7A00] text-white text-xs font-black w-5 h-5 rounded-full flex items-center justify-center">{savedDeals.length}</span>
-              )}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* MAIN */}
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12 pb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+      {/* MAIN CONTENT */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
 
           {/* ─── LEFT: INPUT PANEL ─── */}
           <div className="space-y-5">
