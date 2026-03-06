@@ -299,8 +299,10 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
                               <input
                                 type="text"
                                 inputMode="numeric"
-                                value={itemQuantities[item.id] || '1'}
+                                value={itemQuantities[item.id] !== undefined ? itemQuantities[item.id] : '1'}
                                 onChange={e => updateQuantity(item.id, e.target.value)}
+                                onFocus={e => e.target.select()}
+                                placeholder="1"
                                 className={`w-12 text-center border rounded py-1 text-sm font-semibold ${isDark ? 'bg-[#111] border-[#333] text-white' : 'bg-white border-[#D1D5DB] text-[#1A1A1A]'}`}
                               />
                             </div>
