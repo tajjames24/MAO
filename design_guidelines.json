@@ -1,0 +1,198 @@
+{
+  "identity": {
+    "name": "E1",
+    "role": "The Anti-AI Designer",
+    "mission": "Create a clinical, precise, yet emotionally resonant audio analysis tool. Avoid generic SaaS tropes.",
+    "principles": [
+      "Fusion over Imitation: Mix Swiss Design precision with Music Studio warmth.",
+      "Emotion First: The analysis isn't just data; it's the soul of the track.",
+      "Content is King: The Waveform and the Key are the heroes. Everything else frames them.",
+      "Negative Space: Use white space to signify clarity and precision."
+    ]
+  },
+  "theme_strategy": {
+    "mode": "light_preferred",
+    "description": "Primary Light Mode for a 'Lab/Clinical' feel. High contrast. Optional Dark Mode for studio environments.",
+    "modes": {
+      "light": {
+        "background": "#FFFFFF",
+        "foreground": "#0A0A0A",
+        "card": "#FFFFFF",
+        "card_foreground": "#0A0A0A",
+        "primary": "#FF5A1F",
+        "primary_foreground": "#FFFFFF",
+        "secondary": "#F3F4F6",
+        "secondary_foreground": "#1F2937",
+        "muted": "#F3F4F6",
+        "muted_foreground": "#6B7280",
+        "accent": "#FF5A1F",
+        "accent_foreground": "#FFFFFF",
+        "border": "#E5E7EB",
+        "input": "#E5E7EB",
+        "ring": "#FF5A1F"
+      },
+      "dark": {
+        "background": "#0A0A0A",
+        "foreground": "#FFFFFF",
+        "card": "#121212",
+        "card_foreground": "#FFFFFF",
+        "primary": "#FF5A1F",
+        "primary_foreground": "#FFFFFF",
+        "secondary": "#1F1F1F",
+        "secondary_foreground": "#FFFFFF",
+        "muted": "#1F1F1F",
+        "muted_foreground": "#A1A1AA",
+        "accent": "#FF5A1F",
+        "accent_foreground": "#FFFFFF",
+        "border": "#27272A",
+        "input": "#27272A",
+        "ring": "#FF5A1F"
+      }
+    }
+  },
+  "colors": {
+    "palette": {
+      "primary_orange": "#FF5A1F",
+      "deep_charcoal": "#0A0A0A",
+      "pure_white": "#FFFFFF",
+      "light_gray": "#F3F4F6",
+      "waveform_gray": "#E5E7EB",
+      "success_green": "#10B981",
+      "warning_yellow": "#F59E0B"
+    },
+    "usage_rules": [
+      "Use Primary Orange ONLY for: Main CTAs (Upload), Key Data Points (The detected Key), and Active States.",
+      "Never use gradients for the Orange. Keep it flat and Swiss.",
+      "Backgrounds should be Pure White or very subtle off-white (#FAFAFA).",
+      "Text should never be pure black (#000000). Use #0A0A0A or #171717."
+    ]
+  },
+  "typography": {
+    "font_family": {
+      "headings": "Manrope, sans-serif",
+      "body": "Inter, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "scale": {
+      "h1": "text-5xl md:text-7xl font-extrabold tracking-tighter leading-none",
+      "h2": "text-3xl md:text-5xl font-bold tracking-tight",
+      "h3": "text-2xl font-semibold tracking-tight",
+      "body": "text-base md:text-lg leading-relaxed text-muted-foreground",
+      "data_label": "text-xs font-mono uppercase tracking-widest text-muted-foreground",
+      "data_value": "text-4xl md:text-6xl font-black tracking-tighter text-foreground"
+    },
+    "rules": [
+      "Headings must use 'Manrope'. It matches the geometric precision of audio.",
+      "Data values (BPM, Key) must be MASSIVE.",
+      "Use 'JetBrains Mono' for technical details like file size, Hz, or duration."
+    ]
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 py-6 text-lg font-bold shadow-none transition-transform hover:scale-105 active:scale-95",
+      "secondary": "bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-full px-6 py-4 font-medium",
+      "ghost": "hover:bg-accent/10 hover:text-accent font-medium"
+    },
+    "cards": {
+      "base": "bg-card text-card-foreground border border-border rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300",
+      "result_card": "flex flex-col items-center justify-center p-8 border-2 border-transparent hover:border-primary/10 transition-colors"
+    },
+    "upload_zone": {
+      "wrapper": "border-2 border-dashed border-border hover:border-primary/50 transition-colors rounded-3xl p-12 flex flex-col items-center justify-center bg-secondary/30 min-h-[400px] relative overflow-hidden group cursor-pointer",
+      "active": "border-primary bg-primary/5 ring-4 ring-primary/10",
+      "text": "text-xl font-medium text-muted-foreground group-hover:text-primary transition-colors"
+    },
+    "inputs": {
+      "base": "h-12 rounded-lg border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+    }
+  },
+  "layout_strategy": {
+    "grid_system": {
+      "dashboard": "grid grid-cols-1 md:grid-cols-12 gap-6 p-6 md:p-12",
+      "results_bento": "grid grid-cols-1 md:grid-cols-4 gap-6 w-full max-w-7xl mx-auto"
+    },
+    "spacing": {
+      "section_gap": "gap-12 md:gap-24",
+      "internal_padding": "p-6 md:p-8"
+    },
+    "z_index": {
+      "toast": 100,
+      "modal": 50,
+      "dropdown": 40,
+      "header": 30
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": "backdrop-blur-xl bg-white/70 border-white/20 shadow-sm",
+    "animations": {
+      "hover_lift": "transition-all duration-300 hover:-translate-y-1 hover:shadow-lg",
+      "pulse_slow": "animate-pulse duration-3000"
+    },
+    "micro_interactions": {
+      "button_click": "active:scale-95 transition-transform",
+      "card_hover": "hover:border-primary/20 transition-colors"
+    }
+  },
+  "assets": {
+    "icons": {
+      "library": "lucide-react",
+      "style": "stroke-width={1.5} className='w-6 h-6'"
+    },
+    "images": [
+      {
+        "category": "hero_background",
+        "url": "https://images.unsplash.com/photo-1772050137595-0116f8dba498?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwzfHxtaW5pbWFsaXN0JTIwYXVkaW8lMjB3YXZlZm9ybSUyMGFic3RyYWN0fGVufDB8fHx8MTc3MjgxNzc2OXww&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract black and white light streaks for subtle texture in backgrounds."
+      },
+      {
+        "category": "about_section",
+        "url": "https://images.pexels.com/photos/6892721/pexels-photo-6892721.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Hand in studio - meaningful context for the 'How it works' section."
+      }
+    ]
+  },
+  "library_recommendations": {
+    "waveform": "wavesurfer.js",
+    "charts": "recharts (for analytics)",
+    "animations": "framer-motion",
+    "icons": "lucide-react",
+    "upload": "react-dropzone"
+  },
+  "accessibility_checklist": [
+    "Ensure contrast ratio of Orange text on White is at least 3:1 (Large text) or 4.5:1 (Normal text).",
+    "All interactive elements must have :focus-visible styles.",
+    "Use semantic HTML (main, section, article, h1-h6).",
+    "All images must have alt text."
+  ],
+  "instructions_to_main_agent": [
+    "1. Setup Shadcn UI components first (Card, Button, Slider, Dialog, Input).",
+    "2. Implement the 'Theme Toggle' early, but prioritize the Light Mode design.",
+    "3. Create a custom 'CamelotWheel' component using SVG. Do not use an image.",
+    "4. For the Waveform, wrap 'wavesurfer.js' in a React component/hook.",
+    "5. Use the 'Bento' grid layout for the analysis results page.",
+    "6. Ensure the 'Drag & Drop' zone is the central hero element on the landing page.",
+    "7. NO generic 'music notes' icons. Use abstract waveforms or technical icons.",
+    "8. For 'Camelot Wheel', use standard coloring: 1B=B (Green), 8A=Am (Pink), etc., or a custom 'E1' monochrome variant if the user toggles 'Strict Mode'."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "You tend to converge toward generic, 'on distribution' outputs. In frontend design, this creates what users call the 'AI slop' aesthetic. Avoid this: make creative, distinctive frontends that surprise and delight.",
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur)",
+    "You MUST NOT apply universal transition. Eg: transition: all. This results in breaking transforms. Always add transitions for specific interactive elements like button, input excluding transforms",
+    "You MUST NOT center align the app container, ie do not add .App { text-align: center; } in the css file. This disrupts the human natural reading flow of text",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠💭💡🔮🎯📚🎭🎬 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Main agent relies on these image URLs. Missing categories (especially sponsor logos) = main agent will use placeholder text which is FORBIDDEN",
+    "Prioritize using pre-existing components from src/components/ui when applicable",
+    "Create new components that match the style and conventions of existing components when needed",
+    "Examine existing components to understand the project's component patterns before creating new ones",
+    "Components MUST use named exports (export const ComponentName = ...)",
+    "Pages MUST use default exports (export default function PageName() {...})",
+    "Use 'sonner' for toasts. Sonner component are located in /app/src/components/ui/sonner.tsx"
+  ]
+}
