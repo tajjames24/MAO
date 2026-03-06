@@ -5,41 +5,6 @@
 export default function KeySenseLogo({ className = "" }) {
   return (
     <div className={`flex items-center gap-3 select-none ${className}`} aria-label="KeySense">
-      {/* ── Icon mark: orange square with K lettermark ── */}
-      <svg
-        width="42"
-        height="42"
-        viewBox="0 0 42 42"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-        className="flex-shrink-0"
-      >
-        <rect width="42" height="42" rx="10" fill="#CC5500" />
-
-        {/* K spine */}
-        <path
-          d="M12 10 L12 32"
-          stroke="white"
-          strokeWidth="3.4"
-          strokeLinecap="round"
-        />
-        {/* K upper arm */}
-        <path
-          d="M12 21 L24 10"
-          stroke="white"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-        {/* K lower arm — silver/gray accent */}
-        <path
-          d="M12 21 L24 32"
-          stroke="#CACACA"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-      </svg>
-
       {/* ── Wordmark: Keys + mic + nse ── */}
       <div
         className="flex items-center leading-none text-gray-900"
