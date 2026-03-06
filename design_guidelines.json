@@ -1,0 +1,160 @@
+{
+  "project_name": "Wholesale Offer Calculator",
+  "design_philosophy": {
+    "identity": "The Closer - A high-velocity tool for real estate wholesalers who need instant, accurate numbers.",
+    "core_principles": [
+      "Speed is Safety: Every microsecond of latency is a lost deal. Instant calculations.",
+      "Data Brutalism: Big numbers, high contrast, no decorative fluff.",
+      "Tactile Inputs: Inputs should feel like physical machinery. Heavy focus states, distinct active states.",
+      "Orange is Action: Orange is not just a brand color; it is the signal for 'Money' and 'Action'."
+    ],
+    "mood_board": "Construction Safety Equipment meets Swiss Finance App. High visibility, rugged utility, precise typography."
+  },
+  "typography": {
+    "font_family": {
+      "headings": "Chivo, sans-serif",
+      "body": "Inter, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "scale": {
+      "display": "text-5xl md:text-7xl font-black tracking-tighter",
+      "h1": "text-4xl md:text-5xl font-bold tracking-tight",
+      "h2": "text-3xl font-bold tracking-tight",
+      "h3": "text-2xl font-semibold tracking-tight",
+      "body_lg": "text-lg font-medium",
+      "body": "text-base font-normal",
+      "label": "text-sm font-bold uppercase tracking-widest",
+      "numbers_lg": "text-5xl md:text-6xl font-black tracking-tighter",
+      "numbers_md": "text-3xl md:text-4xl font-bold tracking-tight"
+    },
+    "installation": "Import fonts via Google Fonts in index.css: @import url('https://fonts.googleapis.com/css2?family=Chivo:wght@400;700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap');"
+  },
+  "colors": {
+    "palette": {
+      "primary": {
+        "DEFAULT": "#FF7A00",
+        "foreground": "#FFFFFF",
+        "hover": "#E66E00",
+        "active": "#CC6200"
+      },
+      "secondary": {
+        "DEFAULT": "#1A1A1A",
+        "foreground": "#FFFFFF"
+      },
+      "background": {
+        "DEFAULT": "#FFFFFF",
+        "subtle": "#FFF7ED",
+        "dark": "#0A0A0A"
+      },
+      "surface": {
+        "DEFAULT": "#FFFFFF",
+        "input": "#FFE6CC",
+        "card": "#FFFFFF"
+      },
+      "status": {
+        "success": "#16A34A",
+        "warning": "#CA8A04",
+        "error": "#DC2626"
+      },
+      "border": {
+        "DEFAULT": "#E5E7EB",
+        "strong": "#1A1A1A"
+      }
+    },
+    "gradients": {
+      "none": "No gradients allowed. Solid, confident colors only."
+    }
+  },
+  "spacing_layout": {
+    "scale_factor": "2x",
+    "container_padding": "p-6 md:p-12",
+    "section_gap": "gap-8 md:gap-12",
+    "input_gap": "gap-6",
+    "border_radius": {
+      "card": "rounded-none",
+      "input": "rounded-md",
+      "button": "rounded-sm"
+    },
+    "grid_strategy": {
+      "mobile": "flex flex-col gap-8",
+      "desktop": "grid grid-cols-12 gap-12 items-start"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#FF7A00] text-white hover:bg-[#E66E00] shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] border-2 border-[#1A1A1A] font-bold uppercase tracking-wider px-8 py-4 transition-all",
+      "secondary": "bg-white text-[#1A1A1A] border-2 border-[#1A1A1A] hover:bg-gray-50 shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] font-bold uppercase tracking-wider px-6 py-3 transition-all",
+      "ghost": "text-[#1A1A1A] hover:bg-[#FFE6CC] font-bold px-4 py-2"
+    },
+    "inputs": {
+      "default": "bg-[#FFE6CC] border-2 border-transparent focus:border-[#FF7A00] focus:ring-0 text-[#1A1A1A] font-medium placeholder:text-[#1A1A1A]/50 text-lg py-6 px-4 rounded-md transition-all shadow-inner",
+      "label": "text-[#1A1A1A] font-bold uppercase tracking-widest text-xs mb-2 block"
+    },
+    "cards": {
+      "result": "bg-white border-2 border-[#1A1A1A] p-8 relative overflow-hidden",
+      "input_group": "bg-white border border-gray-200 p-6 md:p-8 rounded-xl shadow-sm"
+    },
+    "deal_score": {
+      "container": "flex items-center gap-2 font-black uppercase tracking-tighter text-2xl",
+      "indicator": "w-4 h-4 rounded-full border border-black"
+    }
+  },
+  "visual_enhancers": {
+    "shadows": {
+      "hard": "shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
+      "soft": "shadow-lg shadow-orange-500/10"
+    },
+    "textures": {
+      "grid": "bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"
+    },
+    "icons": {
+      "library": "lucide-react",
+      "style": "stroke-2 w-6 h-6 text-[#1A1A1A]"
+    }
+  },
+  "motion": {
+    "transitions": "transition-all duration-200 ease-out",
+    "hover": "hover:-translate-y-1",
+    "micro_interactions": {
+      "input_focus": "scale-[1.01]",
+      "button_press": "scale-[0.98]"
+    }
+  },
+  "layout_structure": {
+    "header": {
+      "style": "border-b-2 border-[#1A1A1A] bg-white sticky top-0 z-50",
+      "content": "Logo (Left) + Actions (Right)"
+    },
+    "main": {
+      "desktop": "max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 pt-12 pb-24 px-4",
+      "mobile": "flex flex-col gap-6 px-4 py-6"
+    }
+  },
+  "accessibility": {
+    "contrast": "Ensure all text on Orange (#FF7A00) is White or Black (Check APCA). Small text on Orange MUST be Black.",
+    "focus_states": "Focus rings must be visible (2px solid black or blue).",
+    "labels": "All inputs must have visible labels."
+  },
+  "image_urls": {
+    "hero_bg": "https://images.unsplash.com/photo-1753636742112-81d325b21f86?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTJ8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMGFyY2hpdGVjdHVyYWwlMjBsaW5lcyUyMHdoaXRlJTIwb3JhbmdlJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3NzI3NjQxMzd8MA&ixlib=rb-4.1.0&q=85",
+    "success_modal": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+  },
+  "universal_guidelines": [
+    "Do not use gradients for the primary button. Solid Orange.",
+    "Inputs must have a 'Light Orange' (#FFE6CC) background as per user request.",
+    "Results must be LARGE. The MAO (Max Allowable Offer) is the hero.",
+    "Use 'Chivo' font for all numbers to give them weight.",
+    "The 'Save Deal' feature should use local storage.",
+    "Mobile layout: Sticky 'Calculate/Result' bar at the bottom if the form is long.",
+    "All interactive elements must have data-testid."
+  ],
+  "instructions_to_main_agent": {
+    "step_1": "Setup Tailwind config with custom colors (Orange #FF7A00, Light Orange #FFE6CC) and fonts (Chivo, Inter).",
+    "step_2": "Create the 'ResultCard' component first - it's the visual anchor.",
+    "step_3": "Build the 'InputGroup' component with the specific Light Orange background style.",
+    "step_4": "Implement the calculation logic in a custom hook 'useDealCalculator'.",
+    "step_5": "Assemble the main page: Split view on Desktop, Stacked on Mobile.",
+    "step_6": "Add the 'Export to PDF' using 'jspdf' and 'html2canvas' (or similar lightweight lib).",
+    "step_7": "Ensure the 'Deal Score' logic (Green/Yellow/Red) dynamically updates the Result Card border or accent."
+  }
+}
