@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDealCalculator } from '../hooks/useDealCalculator';
 import {
   ChevronDown, ChevronUp, Save, RotateCcw,
-  BookOpen, Copy, FileText, X, Info, Menu, Sun, Moon
+  BookOpen, Copy, FileText, X, Info
 } from 'lucide-react';
 import { toast } from 'sonner';
 import jsPDF from 'jspdf';
