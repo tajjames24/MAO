@@ -254,13 +254,14 @@ DEAL SCORE: ${(calcs.dealScore.label || 'N/A').toUpperCase()}
     <div className="min-h-screen bg-white" style={{ fontFamily: 'Inter, sans-serif' }}>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-50 bg-white border-b-2 border-[#1A1A1A]">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      <header className="sticky top-0 z-50 bg-white border-b-2 border-[#E5E7EB]">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+          {/* Buywise Logo */}
+          <div className="flex items-center gap-3">
             <img
               src="https://customer-assets.emergentagent.com/job_mao-finder/artifacts/xkcy0lym_IMG_7814.jpeg"
               alt="Buywise"
-              className="h-10 w-auto object-contain"
+              className="h-11 w-auto object-contain"
             />
           </div>
           <button
@@ -280,17 +281,24 @@ DEAL SCORE: ${(calcs.dealScore.label || 'N/A').toUpperCase()}
       </header>
 
       {/* PAGE TITLE BAND */}
-      <div className="bg-[#FFF7ED] border-b-2 border-[#FFE6CC] py-6 px-4">
-        <div className="max-w-7xl mx-auto">
-          <h1
-            className="text-3xl md:text-4xl lg:text-5xl font-black text-[#1A1A1A] tracking-tight leading-none"
-            style={{ fontFamily: 'Chivo, sans-serif' }}
-          >
-            Buywise — Wholesale Offer Calculator
-          </h1>
-          <p className="text-[#1A1A1A]/55 mt-2 text-sm md:text-base font-medium">
-            Quick Deal Analyzer for Real Estate Wholesalers
-          </p>
+      <div className="bg-white border-b-2 border-[#FFE6CC] py-8 px-4">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#FF7A00] mb-1">by Buywise</p>
+            <h1
+              className="text-3xl md:text-4xl lg:text-5xl font-black text-[#1A1A1A] tracking-tight leading-none"
+              style={{ fontFamily: 'Chivo, sans-serif' }}
+            >
+              Wholesale Offer Calculator
+            </h1>
+            <p className="text-[#1A1A1A]/50 mt-2 text-sm md:text-base font-medium">
+              Quick Deal Analyzer for Real Estate Wholesalers
+            </p>
+          </div>
+          <div className="hidden sm:flex items-center gap-2 bg-[#FFF7ED] border-2 border-[#FFE6CC] px-4 py-2.5 rounded-sm">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#FF7A00]" />
+            <span className="text-xs font-bold uppercase tracking-widest text-[#FF7A00]">Live Calculator</span>
+          </div>
         </div>
       </div>
 
