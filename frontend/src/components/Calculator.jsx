@@ -25,6 +25,13 @@ const SCORE_STYLES = {
   gray:   { bg: 'bg-gray-50',   text: 'text-gray-400',   border: 'border-gray-200',   dot: 'bg-gray-300'   },
 };
 
+const formatInput = (val) => {
+  if (!val) return '';
+  const parts = String(val).split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return parts.join('.');
+};
+
 function NumberInput({ label, value, onChange, placeholder, testId, hint }) {
   return (
     <div className="space-y-1.5">
@@ -42,7 +49,7 @@ function NumberInput({ label, value, onChange, placeholder, testId, hint }) {
           data-testid={testId}
           type="text"
           inputMode="numeric"
-          value={value}
+          value={formatInput(value)}
           onChange={e => onChange(e.target.value.replace(/[^0-9.]/g, ''))}
           placeholder={placeholder || '0'}
           className="w-full bg-[#FFE6CC] border-2 border-transparent focus:border-[#FF7A00] focus:outline-none text-[#1A1A1A] font-semibold text-lg py-3.5 pl-9 pr-4 rounded-md transition-all duration-150 placeholder:text-[#1A1A1A]/30"
