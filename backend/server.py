@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from typing import List
 
 import librosa
+from scipy.signal import butter, sosfilt
 from fastapi import FastAPI, APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
@@ -156,25 +157,35 @@ def get_compatible_keys(note_idx: int, scale_type: str) -> list:
 async def analyze_audio_file(file_path: str, filename: str) -> dict:
     logger.info(f"Analyzing: {filename}")
     y, sr = librosa.load(file_path, mono=True, duration=180)
-
-    # BPM on full signal (needs transients)
-    tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
-    bpm = float(np.atleast_1d(tempo)[0])
     duration = float(librosa.get_duration(y=y, sr=sr))
+    hop = 512
 
-    # ── Harmonic / Percussive Source Separation ────────────────────────
-    # Remove drums/transients before pitch analysis — major accuracy boost
+    # ── HPSS: separate harmonic and percussive ─────────────────────────
     try:
-        y_harmonic, _ = librosa.effects.hpss(y, margin=3.0)
-        # If HPSS produces near-silence (e.g. pure tone), fall back
+        y_harmonic, y_percussive = librosa.effects.hpss(y, margin=3.0)
         if np.max(np.abs(y_harmonic)) < 1e-8:
-            y_harmonic = y
+            y_harmonic, y_percussive = y, y
     except Exception as e:
         logger.warning(f"HPSS failed ({e}), using original signal")
-        y_harmonic = y
+        y_harmonic, y_percussive = y, y
 
-    # ── Dual chroma for robustness ─────────────────────────────────────
-    hop = 512
+    # ── BPM: kick-drum focus removes hi-hat subdivision confusion ──────
+    # Hip-hop 16th-note hi-hats create false 4/3× tempo (e.g. 88→117.5).
+    # Low-pass to 200 Hz isolates kick/bass transients = true beat pulse.
+    try:
+        sos = butter(4, 200.0 / (sr / 2), btype='low', output='sos')
+        y_kick = sosfilt(sos, y_percussive)
+        onset_kick = librosa.onset.onset_strength(y=y_kick, sr=sr, hop_length=hop)
+        tempo_raw, _ = librosa.beat.beat_track(onset_envelope=onset_kick, sr=sr, hop_length=hop)
+        bpm = float(np.atleast_1d(tempo_raw)[0])
+        while bpm > 180: bpm /= 2
+        while bpm < 60:  bpm *= 2
+    except Exception as e:
+        logger.warning(f"BPM detection failed ({e}), falling back")
+        tempo_raw, _ = librosa.beat.beat_track(y=y, sr=sr)
+        bpm = float(np.atleast_1d(tempo_raw)[0])
+
+    # ── Chroma: dual CENS+CQT with cube-root compression ──────────────
     try:
         cens = librosa.feature.chroma_cens(y=y_harmonic, sr=sr, hop_length=hop)
         cqt  = librosa.feature.chroma_cqt(y=y_harmonic, sr=sr, hop_length=hop,
@@ -185,9 +196,7 @@ async def analyze_audio_file(file_path: str, filename: str) -> dict:
         chroma = librosa.feature.chroma_stft(y=y_harmonic, sr=sr, hop_length=hop)
         raw_chroma = np.mean(chroma, axis=1)
 
-    # Cube-root compression: prevents a single dominant melody note from
-    # hijacking the correlation (e.g. b6 in minor key mistaken for tonic).
-    # Preserves relative pitch-class importance while equalising dynamics.
+    # Cube-root compression: prevents dominant melody note hijacking correlation
     chroma_mean = np.cbrt(raw_chroma)
 
     key_idx, scale_type, confidence = detect_key_and_scale(chroma_mean)

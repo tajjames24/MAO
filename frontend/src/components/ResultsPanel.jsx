@@ -1,4 +1,4 @@
-import { Download, RotateCcw, Music, Clock, Activity, TrendingUp } from "lucide-react";
+import { RotateCcw, Music, Clock, Activity, TrendingUp } from "lucide-react";
 import WaveformViewer from "./WaveformViewer";
 import CamelotWheel from "./CamelotWheel";
 
@@ -28,14 +28,6 @@ export default function ResultsPanel({ result, audioUrl, onReset, onExport }) {
           <h2 className="text-lg font-bold text-gray-800 font-manrope truncate max-w-sm">{filename}</h2>
         </div>
         <div className="flex gap-2">
-          <button
-            data-testid="export-btn"
-            onClick={onExport}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-gray-200 rounded-full hover:border-[#CC5500] hover:text-[#CC5500] transition-colors"
-          >
-            <Download className="w-4 h-4" strokeWidth={1.5} />
-            Export
-          </button>
           <button
             data-testid="reset-btn"
             onClick={onReset}

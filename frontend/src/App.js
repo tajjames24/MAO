@@ -78,14 +78,6 @@ export default function App() {
     }
   };
 
-  const handleExport = async (id) => {
-    const url = `${API}/export/${id}`;
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `keysense_${id.slice(0, 8)}.json`;
-    a.click();
-  };
-
   const handleMicResult = (data, blobUrl) => {
     setResult(data);
     setAudioUrl(blobUrl);
@@ -166,7 +158,6 @@ export default function App() {
             result={result}
             audioUrl={audioUrl}
             onReset={handleReset}
-            onExport={() => handleExport(result.id)}
           />
         )}
       </main>
@@ -192,7 +183,6 @@ export default function App() {
             <SongLibrary
               tracks={library}
               onDelete={handleDeleteTrack}
-              onExport={handleExport}
               onSelect={(track) => {
                 setResult(track);
                 setAudioUrl(null);

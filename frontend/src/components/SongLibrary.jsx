@@ -1,4 +1,4 @@
-import { Trash2, Download, Music, Clock } from "lucide-react";
+import { Trash2, Music, Clock } from "lucide-react";
 
 const formatDate = (iso) => {
   const d = new Date(iso);
@@ -18,7 +18,7 @@ const SCALE_BADGE = {
   "Melodic Minor": "bg-amber-50 text-amber-700",
 };
 
-export default function SongLibrary({ tracks, onDelete, onExport, onSelect }) {
+export default function SongLibrary({ tracks, onDelete, onSelect }) {
   if (tracks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center flex-1 gap-4 p-12 text-center" data-testid="library-empty">
@@ -72,14 +72,6 @@ export default function SongLibrary({ tracks, onDelete, onExport, onSelect }) {
 
               {/* Actions */}
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  data-testid={`track-export-${track.id}`}
-                  onClick={() => onExport(track.id)}
-                  className="p-1.5 hover:bg-gray-200 rounded-lg transition-colors text-gray-400 hover:text-[#CC5500]"
-                  title="Export"
-                >
-                  <Download className="w-3.5 h-3.5" strokeWidth={1.5} />
-                </button>
                 <button
                   data-testid={`track-delete-${track.id}`}
                   onClick={() => onDelete(track.id)}
