@@ -417,7 +417,6 @@ DEAL SCORE: ${(calcs.dealScore.label || 'N/A').toUpperCase()}
             </div>
           </div>
         </div>
-      </div>
 
       {showSaveModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowSaveModal(false)}>
