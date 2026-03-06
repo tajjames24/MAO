@@ -1,19 +1,20 @@
 import React, { useState, useCallback } from 'react';
-import { ChevronDown, ChevronUp, ArrowRight, Calculator, Check, Info } from 'lucide-react';
+import { ChevronDown, ChevronUp, ArrowRight, Calculator, Check, Info, Home, Grid3X3, Wrench, DollarSign } from 'lucide-react';
 import { toast } from 'sonner';
 
 // ─── REHAB COST LEVELS ───────────────────────────────────────────────────────
 const REHAB_LEVELS = [
-  { id: 'light',  label: 'Light Rehab',    min: 15, max: 30,  color: 'bg-green-500',  textColor: 'text-green-600',  desc: 'Cosmetic updates, paint, cleaning' },
-  { id: 'medium', label: 'Medium Rehab',   min: 35, max: 50,  color: 'bg-yellow-500', textColor: 'text-yellow-600', desc: 'Windows, A/C, cosmetics — nothing major' },
-  { id: 'heavy',  label: 'Heavy Rehab',    min: 60, max: 100, color: 'bg-orange-500', textColor: 'text-orange-600', desc: 'Major systems, structural, full renovation' },
-  { id: 'ultra',  label: 'Ultra Heavy',    min: 100, max: 150, color: 'bg-red-500',   textColor: 'text-red-600',    desc: 'Gut rehab, near-new construction' },
+  { id: 'light',  label: 'Light Rehab',    min: 15, max: 30,  color: 'bg-green-500',  ringColor: 'ring-green-500/30', textColor: 'text-green-400',  desc: 'Cosmetic updates, paint, cleaning' },
+  { id: 'medium', label: 'Medium Rehab',   min: 35, max: 50,  color: 'bg-yellow-500', ringColor: 'ring-yellow-500/30', textColor: 'text-yellow-400', desc: 'Windows, A/C, cosmetics — nothing major' },
+  { id: 'heavy',  label: 'Heavy Rehab',    min: 60, max: 100, color: 'bg-orange-500', ringColor: 'ring-orange-500/30', textColor: 'text-orange-400', desc: 'Major systems, structural, full renovation' },
+  { id: 'ultra',  label: 'Ultra Heavy',    min: 100, max: 150, color: 'bg-red-500',   ringColor: 'ring-red-500/30', textColor: 'text-red-400',    desc: 'Gut rehab, near-new construction' },
 ];
 
 // ─── REPAIR ITEMS (COMPONENT-BASED) ──────────────────────────────────────────
 const REPAIR_CATEGORIES = [
   {
     name: 'Exterior',
+    icon: Home,
     items: [
       { id: 'landscape',    label: 'Clean Landscape',    cost: 2000, desc: '$500–$2,000 for all new landscaping' },
       { id: 'window',       label: 'Windows (per unit)', cost: 300,  qty: true, desc: '$300 each' },
@@ -22,6 +23,7 @@ const REPAIR_CATEGORIES = [
   },
   {
     name: 'Interior',
+    icon: Grid3X3,
     items: [
       { id: 'kitchenFull',   label: 'Kitchen Renovation (Full)',  cost: 10000 },
       { id: 'kitchenLight',  label: 'Kitchen Update (Light)',     cost: 5000 },
@@ -36,6 +38,7 @@ const REPAIR_CATEGORIES = [
   },
   {
     name: 'Mechanicals',
+    icon: Wrench,
     items: [
       { id: 'hvac',         label: 'Furnace and A/C Replacement',  cost: 5000 },
       { id: 'roofRanch',    label: 'Roof Replacement (Ranch)',     cost: 6000 },
@@ -46,6 +49,7 @@ const REPAIR_CATEGORIES = [
   },
   {
     name: 'Other',
+    icon: DollarSign,
     items: [
       { id: 'demo',     label: 'Cosmetic Demo',  cost: 1500 },
       { id: 'cleaning', label: 'Cleaning',       cost: 350 },
@@ -112,6 +116,9 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
     if (!itemQuantities[id]) {
       setItemQuantities(prev => ({ ...prev, [id]: '1' }));
     }
+    // Reset Quick Estimate when selecting advanced items
+    setSqft('');
+    setSelectedLevel(null);
   };
 
   const updateQuantity = (id, val) => {
@@ -123,13 +130,14 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
     setExpandedCategories(prev => ({ ...prev, [name]: !prev[name] }));
   };
 
-  const handleSync = () => {
-    if (suggestedCost <= 0) {
-      toast.error('Calculate a repair estimate first');
+  const handleSync = (amount) => {
+    const costToSync = amount || suggestedCost;
+    if (costToSync <= 0) {
+      toast.error('Select a repair estimate first');
       return;
     }
-    onSyncToCalculator(suggestedCost);
-    toast.success(`${fmt(suggestedCost)} synced to Calculator!`);
+    onSyncToCalculator(costToSync);
+    toast.success(`${fmt(costToSync)} synced to Calculator!`);
   };
 
   const clearAll = () => {
@@ -140,21 +148,32 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
     toast.success('Estimator cleared');
   };
 
+  // Handle reference table click
+  const handleReferenceClick = (amount) => {
+    handleSync(amount);
+  };
+
   return (
     <div className="space-y-6">
       
       {/* ─── QUICK ESTIMATE SECTION ─────────────────────────────────────────── */}
-      <div className={`border-2 shadow-[4px_4px_0px_0px_rgba(26,26,26,1)] ${isDark ? 'bg-[#1E1E1E] border-[#333]' : 'bg-white border-[#1A1A1A]'}`}>
-        <div className="p-5 md:p-6">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-[#FF7A00] mb-5">Quick Estimate by Square Footage</h3>
+      <div className={`rounded-2xl overflow-hidden ${isDark ? 'bg-gradient-to-br from-[#1a1a2e] to-[#16213e]' : 'bg-gradient-to-br from-white to-gray-50'} border ${isDark ? 'border-white/10' : 'border-gray-200'} shadow-xl`}>
+        <div className="p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? 'bg-[#FF7A00]/20' : 'bg-[#FF7A00]/10'}`}>
+              <Grid3X3 className="w-5 h-5 text-[#FF7A00]" />
+            </div>
+            <div>
+              <h3 className={`font-bold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>Quick Estimate</h3>
+              <p className={`text-xs ${isDark ? 'text-white/50' : 'text-gray-500'}`}>Calculate by square footage</p>
+            </div>
+          </div>
           
           {/* Square Footage Input */}
           <div className="space-y-2 mb-6">
-            <label className={`flex items-center gap-1 text-xs font-bold uppercase tracking-widest ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`}>
+            <label className={`flex items-center gap-2 text-sm font-medium ${isDark ? 'text-white/70' : 'text-gray-600'}`}>
+              <Home className="w-4 h-4 text-[#FF7A00]" />
               Square Footage
-              <span title="Enter the total square footage of the property" className="cursor-help">
-                <Info className="w-3 h-3 opacity-40" />
-              </span>
             </label>
             <input
               data-testid="repair-sqft-input"
@@ -163,16 +182,17 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
               value={formatInput(sqft)}
               onChange={e => setSqft(e.target.value.replace(/[^0-9]/g, ''))}
               placeholder="e.g. 1,343"
-              className={`w-full border-2 border-transparent font-semibold text-lg py-3.5 px-4 rounded-md transition-all duration-150 focus:outline-none focus:border-[#FF7A00] placeholder:opacity-30 ${isDark ? 'bg-[#2C1A00] text-white placeholder:text-white' : 'bg-[#FFE6CC] text-[#1A1A1A] placeholder:text-[#1A1A1A]'}`}
+              className={`w-full font-semibold text-lg py-4 px-4 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF7A00] placeholder:opacity-40 ${isDark ? 'bg-white/5 text-white border border-white/10 placeholder:text-white' : 'bg-gray-100 text-gray-900 border border-gray-200 placeholder:text-gray-400'}`}
             />
           </div>
 
           {/* Rehab Level Selector */}
           <div className="space-y-3">
-            <label className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`}>
-              Select Rehab Level
+            <label className={`flex items-center gap-2 text-sm font-medium ${isDark ? 'text-white/70' : 'text-gray-600'}`}>
+              <Wrench className="w-4 h-4 text-[#FF7A00]" />
+              Rehab Level
             </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               {REHAB_LEVELS.map(level => {
                 const isSelected = selectedLevel?.id === level.id;
                 return (
@@ -180,26 +200,25 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
                     key={level.id}
                     data-testid={`rehab-level-${level.id}`}
                     onClick={() => setSelectedLevel(level)}
-                    className={`relative p-4 border-2 text-left transition-all duration-200 ${
+                    className={`relative p-4 rounded-xl text-left transition-all duration-200 ${
                       isSelected 
-                        ? 'border-[#FF7A00] shadow-[3px_3px_0px_0px_rgba(255,122,0,1)]' 
+                        ? `ring-2 ${level.ringColor} ${isDark ? 'bg-white/10' : 'bg-gray-100'}` 
                         : isDark 
-                          ? 'border-[#333] hover:border-[#555]' 
-                          : 'border-[#E5E7EB] hover:border-[#1A1A1A]'
-                    } ${isDark ? 'bg-[#161616]' : 'bg-[#FAFAFA]'}`}
+                          ? 'bg-white/5 hover:bg-white/10 border border-white/10' 
+                          : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                    }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-4 h-4 rounded-full ${level.color} shrink-0`} />
+                    <div className="flex items-start gap-3">
+                      <div className={`w-3 h-3 rounded-full ${level.color} mt-1 shrink-0 ${isSelected ? 'ring-4 ring-offset-2 ring-offset-transparent ' + level.ringColor : ''}`} />
                       <div className="flex-1 min-w-0">
-                        <p className={`font-bold text-sm ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`}>{level.label}</p>
-                        <p className={`text-lg font-black ${level.textColor}`} style={{ fontFamily: 'Chivo, sans-serif' }}>
-                          ${level.min}–${level.max}/sqft
+                        <p className={`font-semibold text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>{level.label}</p>
+                        <p className={`text-base font-bold ${level.textColor}`}>
+                          ${level.min}–${level.max}<span className="text-xs font-normal opacity-70">/sqft</span>
                         </p>
-                        <p className={`text-xs mt-1 ${isDark ? 'text-white/40' : 'text-[#1A1A1A]/50'}`}>{level.desc}</p>
                       </div>
                     </div>
                     {isSelected && (
-                      <div className="absolute top-2 right-2 w-5 h-5 bg-[#FF7A00] rounded-full flex items-center justify-center">
+                      <div className={`absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center ${level.color}`}>
                         <Check className="w-3 h-3 text-white" />
                       </div>
                     )}
@@ -211,19 +230,19 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
 
           {/* Quick Estimate Result */}
           {quickEstimate && sqftValue > 0 && (
-            <div className={`mt-6 p-5 border-2 ${isDark ? 'bg-[#0D0D0D] border-[#333]' : 'bg-[#FFF7ED] border-[#FFE6CC]'}`}>
-              <p className="text-xs font-bold uppercase tracking-widest text-[#FF7A00] mb-3">Estimated Repair Cost</p>
-              <div className="flex items-end gap-2 mb-3">
-                <span className={`font-black leading-none ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`} style={{ fontFamily: 'Chivo, sans-serif', fontSize: 'clamp(1.5rem, 4vw, 2.25rem)' }}>
+            <div className={`mt-6 p-5 rounded-xl ${isDark ? 'bg-[#FF7A00]/10 border border-[#FF7A00]/20' : 'bg-[#FF7A00]/5 border border-[#FF7A00]/20'}`}>
+              <p className="text-xs font-semibold uppercase tracking-wider text-[#FF7A00] mb-2">Estimated Repair Cost</p>
+              <div className="flex items-baseline gap-2 mb-2">
+                <span className={`font-black text-3xl ${isDark ? 'text-white' : 'text-gray-900'}`}>
                   {fmt(quickEstimate.avg)}
                 </span>
-                <span className={`text-sm font-medium pb-1 ${isDark ? 'text-white/50' : 'text-[#1A1A1A]/50'}`}>average</span>
+                <span className={`text-sm font-medium ${isDark ? 'text-white/50' : 'text-gray-500'}`}>average</span>
               </div>
-              <div className={`flex flex-wrap gap-4 text-sm ${isDark ? 'text-white/60' : 'text-[#1A1A1A]/60'}`}>
-                <span>Range: <strong className={isDark ? 'text-white' : 'text-[#1A1A1A]'}>{fmt(quickEstimate.min)}</strong> – <strong className={isDark ? 'text-white' : 'text-[#1A1A1A]'}>{fmt(quickEstimate.max)}</strong></span>
-              </div>
-              <p className={`text-xs mt-3 ${isDark ? 'text-white/40' : 'text-[#1A1A1A]/40'}`}>
-                {sqftValue.toLocaleString()} sqft × ${((selectedLevel.min + selectedLevel.max) / 2).toFixed(2)}/sqft (avg)
+              <p className={`text-sm ${isDark ? 'text-white/60' : 'text-gray-600'}`}>
+                Range: <strong>{fmt(quickEstimate.min)}</strong> – <strong>{fmt(quickEstimate.max)}</strong>
+              </p>
+              <p className={`text-xs mt-2 ${isDark ? 'text-white/40' : 'text-gray-400'}`}>
+                {sqftValue.toLocaleString()} sqft × ${((selectedLevel.min + selectedLevel.max) / 2).toFixed(0)}/sqft
               </p>
             </div>
           )}
@@ -231,103 +250,117 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
       </div>
 
       {/* ─── ADVANCED ITEMIZED SECTION ──────────────────────────────────────── */}
-      <div className={`border-2 shadow-[2px_2px_0px_0px_rgba(26,26,26,1)] ${isDark ? 'border-[#333]' : 'border-[#1A1A1A]'}`}>
+      <div className={`rounded-2xl overflow-hidden ${isDark ? 'bg-gradient-to-br from-[#1a1a2e] to-[#16213e]' : 'bg-gradient-to-br from-white to-gray-50'} border ${isDark ? 'border-white/10' : 'border-gray-200'} shadow-xl`}>
         <button
           data-testid="advanced-repair-toggle"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className={`w-full flex items-center justify-between p-4 md:p-5 transition-colors duration-150 ${isDark ? 'bg-[#1E1E1E] hover:bg-[#2C1A00] text-white' : 'bg-white hover:bg-[#FFF7ED] text-[#1A1A1A]'}`}
+          className={`w-full flex items-center justify-between p-5 transition-colors duration-200`}
         >
           <div className="flex items-center gap-3">
-            <span className="text-xs font-bold uppercase tracking-widest">Advanced Itemized Repairs</span>
-            {selectedItemCount > 0 && (
-              <span className="bg-[#FF7A00] text-white text-xs font-black px-2 py-0.5 rounded-full">
-                {selectedItemCount} selected
-              </span>
-            )}
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? 'bg-[#FF7A00]/20' : 'bg-[#FF7A00]/10'}`}>
+              <Wrench className="w-5 h-5 text-[#FF7A00]" />
+            </div>
+            <div className="text-left">
+              <span className={`font-bold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>Advanced Itemized</span>
+              {selectedItemCount > 0 && (
+                <span className="ml-2 bg-[#FF7A00] text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                  {selectedItemCount}
+                </span>
+              )}
+              <p className={`text-xs ${isDark ? 'text-white/50' : 'text-gray-500'}`}>Select individual repairs</p>
+            </div>
           </div>
-          {showAdvanced ? <ChevronUp className="w-4 h-4 text-[#FF7A00]" /> : <ChevronDown className="w-4 h-4" />}
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isDark ? 'bg-white/10' : 'bg-gray-100'}`}>
+            {showAdvanced ? <ChevronUp className="w-4 h-4 text-[#FF7A00]" /> : <ChevronDown className="w-4 h-4 text-[#FF7A00]" />}
+          </div>
         </button>
 
         {showAdvanced && (
-          <div className={`border-t-2 ${isDark ? 'border-[#333] bg-[#161616]' : 'border-[#1A1A1A] bg-[#FFFAF5]'}`}>
-            {REPAIR_CATEGORIES.map(category => (
-              <div key={category.name} className={`border-b last:border-b-0 ${isDark ? 'border-[#333]' : 'border-[#E5E7EB]'}`}>
-                <button
-                  onClick={() => toggleCategory(category.name)}
-                  className={`w-full flex items-center justify-between px-5 py-3 transition-colors ${isDark ? 'hover:bg-[#1E1E1E]' : 'hover:bg-[#FFF7ED]'}`}
-                >
-                  <span className={`text-xs font-bold uppercase tracking-widest ${isDark ? 'text-white/60' : 'text-[#1A1A1A]/60'}`}>{category.name}</span>
-                  {expandedCategories[category.name] ? <ChevronUp className="w-4 h-4 opacity-40" /> : <ChevronDown className="w-4 h-4 opacity-40" />}
-                </button>
-                
-                {expandedCategories[category.name] && (
-                  <div className="px-5 pb-4 space-y-2">
-                    {category.items.map(item => {
-                      const isSelected = selectedItems[item.id];
-                      const qty = parseInt(itemQuantities[item.id]) || 1;
-                      const itemTotal = item.cost * qty;
-                      
-                      return (
-                        <div 
-                          key={item.id}
-                          className={`flex items-center gap-3 p-3 rounded transition-all ${
-                            isSelected 
-                              ? isDark ? 'bg-[#2C1A00] border border-[#FF7A00]/30' : 'bg-[#FFE6CC]/50 border border-[#FF7A00]/30'
-                              : isDark ? 'bg-[#1E1E1E]' : 'bg-white'
-                          }`}
-                        >
-                          <button
-                            data-testid={`repair-item-${item.id}`}
-                            onClick={() => toggleItem(item.id)}
-                            className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-all ${
+          <div className={`border-t ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
+            {REPAIR_CATEGORIES.map(category => {
+              const CategoryIcon = category.icon;
+              return (
+                <div key={category.name} className={`border-b last:border-b-0 ${isDark ? 'border-white/5' : 'border-gray-100'}`}>
+                  <button
+                    onClick={() => toggleCategory(category.name)}
+                    className={`w-full flex items-center justify-between px-5 py-3 transition-colors ${isDark ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <CategoryIcon className={`w-4 h-4 ${isDark ? 'text-white/40' : 'text-gray-400'}`} />
+                      <span className={`text-sm font-semibold ${isDark ? 'text-white/70' : 'text-gray-600'}`}>{category.name}</span>
+                    </div>
+                    {expandedCategories[category.name] ? <ChevronUp className="w-4 h-4 opacity-40" /> : <ChevronDown className="w-4 h-4 opacity-40" />}
+                  </button>
+                  
+                  {expandedCategories[category.name] && (
+                    <div className="px-5 pb-4 space-y-2">
+                      {category.items.map(item => {
+                        const isSelected = selectedItems[item.id];
+                        const qty = parseInt(itemQuantities[item.id]) || 1;
+                        const itemTotal = item.cost * qty;
+                        
+                        return (
+                          <div 
+                            key={item.id}
+                            className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
                               isSelected 
-                                ? 'bg-[#FF7A00] border-[#FF7A00]' 
-                                : isDark ? 'border-[#555] hover:border-[#FF7A00]' : 'border-[#D1D5DB] hover:border-[#FF7A00]'
+                                ? isDark ? 'bg-[#FF7A00]/10 border border-[#FF7A00]/30' : 'bg-[#FF7A00]/5 border border-[#FF7A00]/20'
+                                : isDark ? 'bg-white/5 border border-transparent' : 'bg-gray-50 border border-transparent'
                             }`}
                           >
-                            {isSelected && <Check className="w-3 h-3 text-white" />}
-                          </button>
-                          
-                          <div className="flex-1 min-w-0">
-                            <p className={`font-medium text-sm ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`}>{item.label}</p>
-                            {item.desc && <p className={`text-xs ${isDark ? 'text-white/40' : 'text-[#1A1A1A]/40'}`}>{item.desc}</p>}
-                          </div>
-                          
-                          {item.qty && isSelected && (
-                            <div className="flex items-center gap-2">
-                              <span className={`text-xs ${isDark ? 'text-white/40' : 'text-[#1A1A1A]/40'}`}>Qty:</span>
-                              <input
-                                type="text"
-                                inputMode="numeric"
-                                value={itemQuantities[item.id] !== undefined ? itemQuantities[item.id] : '1'}
-                                onChange={e => updateQuantity(item.id, e.target.value)}
-                                onFocus={e => e.target.select()}
-                                placeholder="1"
-                                className={`w-12 text-center border rounded py-1 text-sm font-semibold ${isDark ? 'bg-[#111] border-[#333] text-white' : 'bg-white border-[#D1D5DB] text-[#1A1A1A]'}`}
-                              />
+                            <button
+                              data-testid={`repair-item-${item.id}`}
+                              onClick={() => toggleItem(item.id)}
+                              className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-all ${
+                                isSelected 
+                                  ? 'bg-[#FF7A00]' 
+                                  : isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-gray-200 hover:bg-gray-300'
+                              }`}
+                            >
+                              {isSelected && <Check className="w-4 h-4 text-white" />}
+                            </button>
+                            
+                            <div className="flex-1 min-w-0">
+                              <p className={`font-medium text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>{item.label}</p>
+                              {item.desc && <p className={`text-xs ${isDark ? 'text-white/40' : 'text-gray-400'}`}>{item.desc}</p>}
                             </div>
-                          )}
-                          
-                          <div className="text-right shrink-0">
-                            <p className={`font-bold text-sm ${isSelected ? 'text-[#FF7A00]' : isDark ? 'text-white/60' : 'text-[#1A1A1A]/60'}`} style={{ fontFamily: 'Chivo, sans-serif' }}>
-                              {isSelected && item.qty ? fmt(itemTotal) : fmt(item.cost)}
-                            </p>
-                            {item.qty && !isSelected && <p className={`text-xs ${isDark ? 'text-white/30' : 'text-[#1A1A1A]/30'}`}>each</p>}
+                            
+                            {item.qty && isSelected && (
+                              <div className="flex items-center gap-2">
+                                <span className={`text-xs ${isDark ? 'text-white/40' : 'text-gray-400'}`}>Qty:</span>
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  value={itemQuantities[item.id] !== undefined ? itemQuantities[item.id] : '1'}
+                                  onChange={e => updateQuantity(item.id, e.target.value)}
+                                  onFocus={e => e.target.select()}
+                                  placeholder="1"
+                                  className={`w-12 text-center rounded-lg py-1 text-sm font-semibold ${isDark ? 'bg-white/10 border-0 text-white' : 'bg-white border border-gray-200 text-gray-900'}`}
+                                />
+                              </div>
+                            )}
+                            
+                            <div className="text-right shrink-0">
+                              <p className={`font-bold text-sm ${isSelected ? 'text-[#FF7A00]' : isDark ? 'text-white/60' : 'text-gray-500'}`}>
+                                {isSelected && item.qty ? fmt(itemTotal) : fmt(item.cost)}
+                              </p>
+                              {item.qty && !isSelected && <p className={`text-xs ${isDark ? 'text-white/30' : 'text-gray-400'}`}>each</p>}
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            ))}
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
 
             {/* Advanced Total */}
             {advancedTotal > 0 && (
-              <div className={`p-5 border-t-2 ${isDark ? 'border-[#333] bg-[#0D0D0D]' : 'border-[#FFE6CC] bg-[#FFF7ED]'}`}>
+              <div className={`p-5 ${isDark ? 'bg-[#FF7A00]/10' : 'bg-[#FF7A00]/5'}`}>
                 <div className="flex items-center justify-between">
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#FF7A00]">Itemized Total</p>
-                  <p className={`font-black text-2xl ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`} style={{ fontFamily: 'Chivo, sans-serif' }}>
+                  <p className="text-sm font-semibold text-[#FF7A00]">Itemized Total</p>
+                  <p className={`font-black text-2xl ${isDark ? 'text-white' : 'text-gray-900'}`}>
                     {fmt(advancedTotal)}
                   </p>
                 </div>
@@ -339,16 +372,16 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
 
       {/* ─── SUGGESTED REPAIR COST ──────────────────────────────────────────── */}
       {suggestedCost > 0 && (
-        <div className="bg-[#FF7A00] border-2 border-[#1A1A1A] p-6 shadow-[5px_5px_0px_0px_rgba(26,26,26,1)]">
+        <div className="bg-gradient-to-r from-[#FF7A00] to-[#FF9A40] rounded-2xl p-6 shadow-xl">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-white/70 mb-1">Suggested Repair Cost</p>
-              <p className="font-black text-white leading-none" style={{ fontFamily: 'Chivo, sans-serif', fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
+              <p className="text-xs font-semibold uppercase tracking-wider text-white/70 mb-1">Suggested Repair Cost</p>
+              <p className="font-black text-white text-4xl">
                 {fmt(suggestedCost)}
               </p>
-              <p className="text-white/60 text-sm mt-2">
+              <p className="text-white/60 text-sm mt-1">
                 {advancedTotal > 0 && quickEstimate?.avg 
-                  ? `Using higher of: Quick (${fmt(quickEstimate.avg)}) vs Itemized (${fmt(advancedTotal)})`
+                  ? `Higher of: Quick (${fmt(quickEstimate.avg)}) vs Itemized (${fmt(advancedTotal)})`
                   : advancedTotal > 0 
                     ? 'Based on itemized repairs'
                     : 'Based on sqft estimate'
@@ -357,10 +390,10 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
             </div>
             <button
               data-testid="sync-to-calculator-btn"
-              onClick={handleSync}
-              className="flex items-center justify-center gap-2 bg-white text-[#1A1A1A] font-bold uppercase tracking-wider px-6 py-4 border-2 border-[#1A1A1A] shadow-[3px_3px_0px_0px_rgba(26,26,26,1)] hover:bg-[#FFF7ED] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all text-sm whitespace-nowrap"
+              onClick={() => handleSync()}
+              className="flex items-center justify-center gap-2 bg-white text-[#FF7A00] font-bold px-6 py-4 rounded-xl shadow-lg hover:bg-gray-50 active:scale-95 transition-all text-sm whitespace-nowrap"
             >
-              <Calculator className="w-4 h-4" />
+              <Calculator className="w-5 h-5" />
               Sync to Calculator
               <ArrowRight className="w-4 h-4" />
             </button>
@@ -369,27 +402,57 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
       )}
 
       {/* ─── REFERENCE TABLE ──────────────────────────────────────────────────── */}
-      <div className={`border-2 shadow-[2px_2px_0px_0px_rgba(26,26,26,1)] overflow-hidden ${isDark ? 'border-[#333]' : 'border-[#1A1A1A]'}`}>
-        <div className={`px-5 py-3 ${isDark ? 'bg-[#1A1A1A]' : 'bg-[#1A1A1A]'}`}>
-          <p className="text-white font-bold text-xs uppercase tracking-widest">Repair Cost Reference by Size</p>
+      <div className={`rounded-2xl overflow-hidden ${isDark ? 'bg-gradient-to-br from-[#1a1a2e] to-[#16213e]' : 'bg-gradient-to-br from-white to-gray-50'} border ${isDark ? 'border-white/10' : 'border-gray-200'} shadow-xl`}>
+        <div className={`px-5 py-4 flex items-center gap-3 ${isDark ? 'bg-white/5' : 'bg-gray-50'}`}>
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDark ? 'bg-[#FF7A00]/20' : 'bg-[#FF7A00]/10'}`}>
+            <DollarSign className="w-4 h-4 text-[#FF7A00]" />
+          </div>
+          <div>
+            <p className={`font-bold text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Reference by Size</p>
+            <p className={`text-xs ${isDark ? 'text-white/50' : 'text-gray-500'}`}>Click any price to send to calculator</p>
+          </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className={isDark ? 'bg-[#1E1E1E]' : 'bg-[#FFF7ED]'}>
-                <th className={`px-4 py-3 text-left text-xs font-bold uppercase tracking-widest ${isDark ? 'text-white/60' : 'text-[#1A1A1A]/60'}`}>Property Size</th>
-                <th className={`px-4 py-3 text-right text-xs font-bold uppercase tracking-widest text-green-600`}>Light</th>
-                <th className={`px-4 py-3 text-right text-xs font-bold uppercase tracking-widest text-yellow-600`}>Medium</th>
-                <th className={`px-4 py-3 text-right text-xs font-bold uppercase tracking-widest text-orange-600`}>Heavy</th>
+              <tr className={isDark ? 'bg-white/5' : 'bg-gray-50'}>
+                <th className={`px-4 py-3 text-left text-xs font-semibold ${isDark ? 'text-white/50' : 'text-gray-500'}`}>Property Size</th>
+                <th className={`px-4 py-3 text-center text-xs font-semibold text-green-500`}>Light</th>
+                <th className={`px-4 py-3 text-center text-xs font-semibold text-yellow-500`}>Medium</th>
+                <th className={`px-4 py-3 text-center text-xs font-semibold text-orange-500`}>Heavy</th>
               </tr>
             </thead>
             <tbody>
               {SQFT_RANGES.map((range, i) => (
-                <tr key={i} className={`border-t ${isDark ? 'border-[#333]' : 'border-[#E5E7EB]'}`}>
-                  <td className={`px-4 py-3 font-medium ${isDark ? 'text-white' : 'text-[#1A1A1A]'}`}>{range.label}</td>
-                  <td className="px-4 py-3 text-right font-bold text-green-600" style={{ fontFamily: 'Chivo, sans-serif' }}>{fmt(range.light)}</td>
-                  <td className="px-4 py-3 text-right font-bold text-yellow-600" style={{ fontFamily: 'Chivo, sans-serif' }}>{fmt(range.avg)}</td>
-                  <td className="px-4 py-3 text-right font-bold text-orange-600" style={{ fontFamily: 'Chivo, sans-serif' }}>{fmt(range.heavy)}</td>
+                <tr key={i} className={`border-t ${isDark ? 'border-white/5' : 'border-gray-100'}`}>
+                  <td className={`px-4 py-4 font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{range.label}</td>
+                  <td className="px-4 py-4 text-center">
+                    <button
+                      data-testid={`ref-light-${i}`}
+                      onClick={() => handleReferenceClick(range.light)}
+                      className="font-bold text-green-500 hover:text-green-400 hover:underline transition-colors cursor-pointer"
+                    >
+                      {fmt(range.light)}
+                    </button>
+                  </td>
+                  <td className="px-4 py-4 text-center">
+                    <button
+                      data-testid={`ref-medium-${i}`}
+                      onClick={() => handleReferenceClick(range.avg)}
+                      className="font-bold text-yellow-500 hover:text-yellow-400 hover:underline transition-colors cursor-pointer"
+                    >
+                      {fmt(range.avg)}
+                    </button>
+                  </td>
+                  <td className="px-4 py-4 text-center">
+                    <button
+                      data-testid={`ref-heavy-${i}`}
+                      onClick={() => handleReferenceClick(range.heavy)}
+                      className="font-bold text-orange-500 hover:text-orange-400 hover:underline transition-colors cursor-pointer"
+                    >
+                      {fmt(range.heavy)}
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -403,7 +466,7 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
           <button
             data-testid="clear-estimator-btn"
             onClick={clearAll}
-            className={`text-sm font-bold uppercase tracking-wider px-6 py-2 transition-colors ${isDark ? 'text-white/40 hover:text-white' : 'text-[#1A1A1A]/40 hover:text-[#1A1A1A]'}`}
+            className={`text-sm font-semibold px-6 py-2 rounded-full transition-all ${isDark ? 'text-white/40 hover:text-white hover:bg-white/10' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'}`}
           >
             Clear Estimator
           </button>
