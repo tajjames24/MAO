@@ -317,14 +317,22 @@ export default function CompGenerator({ onMenuClick, onUseInCalculator }) {
 
         {/* Error */}
         {error && !loading && (
-          <div className="border-2 border-red-500 bg-red-50 p-5 flex items-start gap-3 shadow-[3px_3px_0px_0px_rgba(220,38,38,0.25)]">
-            <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+          <div className={`border-2 p-5 flex items-start gap-3 ${
+            error.includes('balance') || error.includes('Balance')
+              ? 'border-yellow-500 bg-yellow-50'
+              : 'border-red-500 bg-red-50'
+          } shadow-[3px_3px_0px_0px_rgba(26,26,26,0.15)]`}>
+            <AlertCircle className={`w-5 h-5 shrink-0 mt-0.5 ${error.includes('balance') || error.includes('Balance') ? 'text-yellow-600' : 'text-red-600'}`} />
             <div>
-              <p className="font-bold text-red-700">Analysis Failed</p>
-              <p className="text-red-600 text-sm mt-0.5">{error}</p>
-              <button onClick={generate} className="mt-2 text-sm font-bold text-red-700 underline">
-                Try again
-              </button>
+              <p className={`font-bold ${error.includes('balance') || error.includes('Balance') ? 'text-yellow-700' : 'text-red-700'}`}>
+                {error.includes('balance') || error.includes('Balance') ? 'Low AI Key Balance' : 'Analysis Failed'}
+              </p>
+              <p className={`text-sm mt-0.5 ${error.includes('balance') || error.includes('Balance') ? 'text-yellow-600' : 'text-red-600'}`}>{error}</p>
+              {!error.includes('balance') && !error.includes('Balance') && (
+                <button onClick={generate} className="mt-2 text-sm font-bold text-red-700 underline">
+                  Try again
+                </button>
+              )}
             </div>
           </div>
         )}

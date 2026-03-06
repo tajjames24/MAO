@@ -110,12 +110,12 @@ async def generate_comps(request: CompRequest):
     data_source = "AI Analysis"
 
     # ── Step 1: Try HomeHarvest for real MLS data ──────────────────────────
+    parts = address.split(',')
+    area = ','.join(parts[-2:]).strip() if len(parts) >= 2 else address
+
     try:
         def fetch_homeharvest():
             from homeharvest import scrape_property
-            import pandas as pd
-            parts = address.split(',')
-            area = ','.join(parts[-2:]).strip() if len(parts) >= 2 else address
             props = scrape_property(location=area, listing_type="sold", past_days=180)
             if props is not None and not props.empty:
                 cols = ['full_street_line', 'city', 'state', 'beds', 'full_baths',
@@ -179,10 +179,16 @@ async def generate_comps(request: CompRequest):
 
     except json.JSONDecodeError as e:
         logger.error(f"JSON parse error: {e}")
-        raise HTTPException(status_code=500, detail="Failed to parse AI analysis")
+        raise HTTPException(status_code=500, detail="Failed to parse AI analysis. Please try again.")
     except Exception as e:
-        logger.error(f"Comp generation error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        err_str = str(e)
+        logger.error(f"Comp generation error: {err_str}")
+        if "budget" in err_str.lower() or "Budget" in err_str:
+            raise HTTPException(
+                status_code=402,
+                detail="AI key balance is too low. Please go to Profile → Universal Key → Add Balance to top up your Emergent key."
+            )
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {err_str}")
 
 
 # Include the router in the main app
