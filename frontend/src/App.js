@@ -8,6 +8,7 @@ import ResultsPanel from "./components/ResultsPanel";
 import SongLibrary from "./components/SongLibrary";
 import MicRecorder from "./components/MicRecorder";
 import { Mic, Library, X } from "lucide-react";
+import KeySenseLogo from "./components/KeySenseLogo";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -99,12 +100,8 @@ export default function App() {
       {/* Header */}
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-gray-100" data-testid="app-header">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <button onClick={handleReset} className="flex items-center gap-2.5 group" data-testid="logo-btn">
-            <img
-              src="https://customer-assets.emergentagent.com/job_key-sense-1/artifacts/352mu2th_Screenshot%202026-03-06%20at%2012.33.14%E2%80%AFPM.png"
-              alt="KeySense"
-              className="h-10 w-auto rounded-xl shadow-sm group-hover:scale-105 transition-transform"
-            />
+          <button onClick={handleReset} className="group" data-testid="logo-btn">
+            <KeySenseLogo className="group-hover:opacity-90 transition-opacity" />
           </button>
 
           <div className="flex items-center gap-2">
