@@ -287,27 +287,6 @@ DEAL SCORE: ${(calcs.dealScore.label || 'N/A').toUpperCase()}
         </div>
       </header>
 
-      {/* PAGE TITLE BAND */}
-      <div className="bg-white border-b-2 border-[#FFE6CC] py-8 px-4">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-          <div>
-            <h1
-              className="text-3xl md:text-4xl lg:text-5xl font-black text-[#1A1A1A] tracking-tight leading-none"
-              style={{ fontFamily: 'Chivo, sans-serif' }}
-            >
-              Wholesale Offer Calculator
-            </h1>
-            <p className="text-[#1A1A1A]/50 mt-2 text-sm md:text-base font-medium">
-              Quick Deal Analyzer for Real Estate Wholesalers
-            </p>
-          </div>
-          <div className="hidden sm:flex items-center gap-2 bg-[#FFF7ED] border-2 border-[#FFE6CC] px-4 py-2.5 rounded-sm">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#FF7A00]" />
-            <span className="text-xs font-bold uppercase tracking-widest text-[#FF7A00]">Live Calculator</span>
-          </div>
-        </div>
-      </div>
-
       {/* MAIN */}
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12 pb-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
