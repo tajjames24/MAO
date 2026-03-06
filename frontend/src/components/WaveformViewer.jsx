@@ -5,23 +5,30 @@ import { Play, Pause, Volume2 } from "lucide-react";
 export default function WaveformViewer({ audioUrl }) {
   const containerRef = useRef(null);
   const wsRef = useRef(null);
+  const mountedRef = useRef(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
 
   useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
+
+  useEffect(() => {
     if (!containerRef.current || !audioUrl) return;
 
-    // Destroy previous instance
-    if (wsRef.current) {
-      wsRef.current.destroy();
-      wsRef.current = null;
-    }
+    // Safely destroy previous instance
+    const prev = wsRef.current;
+    wsRef.current = null;
+    if (prev) { try { prev.destroy(); } catch (_) {} }
 
-    setIsReady(false);
-    setIsPlaying(false);
-    setCurrentTime(0);
+    if (mountedRef.current) {
+      setIsReady(false);
+      setIsPlaying(false);
+      setCurrentTime(0);
+    }
 
     const ws = WaveSurfer.create({
       container: containerRef.current,
@@ -36,25 +43,25 @@ export default function WaveformViewer({ audioUrl }) {
       interact: true,
     });
 
+    // Swallow AbortError — expected when component unmounts mid-load (WaveSurfer v7)
+    ws.on("error", (err) => {
+      if (err?.name === "AbortError") return;
+      console.warn("WaveSurfer error:", err);
+    });
+
     ws.load(audioUrl);
 
-    ws.on("ready", () => {
-      setIsReady(true);
-      setTotalDuration(ws.getDuration());
-    });
-
-    ws.on("audioprocess", () => {
-      setCurrentTime(ws.getCurrentTime());
-    });
-
-    ws.on("play", () => setIsPlaying(true));
-    ws.on("pause", () => setIsPlaying(false));
-    ws.on("finish", () => setIsPlaying(false));
+    ws.on("ready",        () => { if (!mountedRef.current) return; setIsReady(true); setTotalDuration(ws.getDuration()); });
+    ws.on("audioprocess", () => { if (!mountedRef.current) return; setCurrentTime(ws.getCurrentTime()); });
+    ws.on("play",         () => { if (mountedRef.current) setIsPlaying(true);  });
+    ws.on("pause",        () => { if (mountedRef.current) setIsPlaying(false); });
+    ws.on("finish",       () => { if (mountedRef.current) setIsPlaying(false); });
 
     wsRef.current = ws;
 
     return () => {
-      ws.destroy();
+      wsRef.current = null;
+      try { ws.destroy(); } catch (_) {}
     };
   }, [audioUrl]);
 
