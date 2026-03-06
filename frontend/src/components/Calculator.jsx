@@ -284,7 +284,6 @@ DEAL SCORE: ${(calcs.dealScore.label || 'N/A').toUpperCase()}
       <div className="bg-white border-b-2 border-[#FFE6CC] py-8 px-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#FF7A00] mb-1">by Buywise</p>
             <h1
               className="text-3xl md:text-4xl lg:text-5xl font-black text-[#1A1A1A] tracking-tight leading-none"
               style={{ fontFamily: 'Chivo, sans-serif' }}
