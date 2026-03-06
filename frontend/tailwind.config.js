@@ -7,6 +7,10 @@ module.exports = {
   ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			'chivo': ['Chivo', 'sans-serif'],
+  			'inter': ['Inter', 'sans-serif'],
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

@@ -1,20 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Chivo:wght@400;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
     margin: 0;
-    font-family:
-        -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-        "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-        sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: #ffffff;
 }
 
 code {
-    font-family:
-        source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+    font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, monospace;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: #FFE6CC;
+    outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #FF7A00;
+    cursor: pointer;
+    border: 2px solid #1A1A1A;
+}
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #FF7A00;
+    cursor: pointer;
+    border: 2px solid #1A1A1A;
 }
 
 @layer base {
