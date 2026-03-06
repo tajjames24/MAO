@@ -46,7 +46,7 @@ export default function SongLibrary({ tracks, onDelete, onExport, onSelect }) {
               {/* Key badge */}
               <button
                 onClick={() => onSelect(track)}
-                className="w-12 h-12 flex-shrink-0 bg-[#FF5A1F] text-white rounded-xl flex items-center justify-center font-black font-manrope text-lg hover:bg-[#e04a15] transition-colors active:scale-95"
+                className="w-12 h-12 flex-shrink-0 bg-[#CC5500] text-white rounded-xl flex items-center justify-center font-black font-manrope text-lg hover:bg-[#AA4400] transition-colors active:scale-95"
                 data-testid={`track-select-${track.id}`}
               >
                 {track.key}
@@ -75,7 +75,7 @@ export default function SongLibrary({ tracks, onDelete, onExport, onSelect }) {
                 <button
                   data-testid={`track-export-${track.id}`}
                   onClick={() => onExport(track.id)}
-                  className="p-1.5 hover:bg-gray-200 rounded-lg transition-colors text-gray-400 hover:text-[#FF5A1F]"
+                  className="p-1.5 hover:bg-gray-200 rounded-lg transition-colors text-gray-400 hover:text-[#CC5500]"
                   title="Export"
                 >
                   <Download className="w-3.5 h-3.5" strokeWidth={1.5} />

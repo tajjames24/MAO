@@ -7,7 +7,7 @@ import UploadZone from "./components/UploadZone";
 import ResultsPanel from "./components/ResultsPanel";
 import SongLibrary from "./components/SongLibrary";
 import MicRecorder from "./components/MicRecorder";
-import { Music, Mic, Library, X } from "lucide-react";
+import { Mic, Library, X } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -100,19 +100,18 @@ export default function App() {
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-gray-100" data-testid="app-header">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <button onClick={handleReset} className="flex items-center gap-2.5 group" data-testid="logo-btn">
-            <div className="w-9 h-9 bg-[#FF5A1F] rounded-xl flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-              <Music className="w-5 h-5 text-white" strokeWidth={2} />
-            </div>
-            <span className="font-extrabold text-xl tracking-tight font-manrope">
-              Key<span className="text-[#FF5A1F]">Sense</span>
-            </span>
+            <img
+              src="https://customer-assets.emergentagent.com/job_key-sense-1/artifacts/352mu2th_Screenshot%202026-03-06%20at%2012.33.14%E2%80%AFPM.png"
+              alt="KeySense"
+              className="h-10 w-auto rounded-xl shadow-sm group-hover:scale-105 transition-transform"
+            />
           </button>
 
           <div className="flex items-center gap-2">
             <button
               data-testid="mic-btn"
               onClick={() => setShowMic(true)}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 hover:text-[#FF5A1F] border border-gray-200 hover:border-[#FF5A1F] rounded-full transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 hover:text-[#CC5500] border border-gray-200 hover:border-[#CC5500] rounded-full transition-colors"
             >
               <Mic className="w-4 h-4" strokeWidth={1.5} />
               <span className="hidden sm:inline">Mic Input</span>
@@ -122,14 +121,14 @@ export default function App() {
               onClick={() => setShowLibrary(!showLibrary)}
               className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full border transition-colors ${
                 showLibrary
-                  ? "bg-[#FF5A1F] text-white border-[#FF5A1F]"
-                  : "text-gray-600 hover:text-[#FF5A1F] border-gray-200 hover:border-[#FF5A1F]"
+                  ? "bg-[#CC5500] text-white border-[#CC5500]"
+                  : "text-gray-600 hover:text-[#CC5500] border-gray-200 hover:border-[#CC5500]"
               }`}
             >
               <Library className="w-4 h-4" strokeWidth={1.5} />
               <span className="hidden sm:inline">Library</span>
               {library.length > 0 && (
-                <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${showLibrary ? "bg-white/20" : "bg-[#FF5A1F] text-white"}`}>
+                <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${showLibrary ? "bg-white/20" : "bg-[#CC5500] text-white"}`}>
                   {library.length}
                 </span>
               )}
@@ -147,7 +146,7 @@ export default function App() {
           <div className="flex flex-col items-center justify-center py-40 gap-6" data-testid="analyzing-state">
             <div className="relative">
               <div className="w-20 h-20 border-4 border-gray-100 rounded-full" />
-              <div className="absolute inset-0 w-20 h-20 border-4 border-[#FF5A1F] border-t-transparent rounded-full animate-spin" />
+              <div className="absolute inset-0 w-20 h-20 border-4 border-[#CC5500] border-t-transparent rounded-full animate-spin" />
             </div>
             <div className="text-center">
               <p className="text-gray-800 text-lg font-semibold font-manrope">Analyzing audio...</p>
@@ -157,7 +156,7 @@ export default function App() {
               {[0, 1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
-                  className="w-1.5 bg-[#FF5A1F] rounded-full animate-bounce"
+                  className="w-1.5 bg-[#CC5500] rounded-full animate-bounce"
                   style={{ height: `${12 + i * 6}px`, animationDelay: `${i * 0.1}s` }}
                 />
               ))}

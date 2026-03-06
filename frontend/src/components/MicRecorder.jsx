@@ -88,8 +88,8 @@ export default function MicRecorder({ onResult, onClose, apiUrl }) {
         <div className="relative flex items-center justify-center">
           {state === STATES.RECORDING && (
             <>
-              <div className="absolute w-28 h-28 rounded-full bg-[#FF5A1F]/20 animate-ping" />
-              <div className="absolute w-24 h-24 rounded-full bg-[#FF5A1F]/10" />
+              <div className="absolute w-28 h-28 rounded-full bg-[#CC5500]/20 animate-ping" />
+              <div className="absolute w-24 h-24 rounded-full bg-[#CC5500]/10" />
             </>
           )}
           <button
@@ -99,7 +99,7 @@ export default function MicRecorder({ onResult, onClose, apiUrl }) {
             className={`relative w-20 h-20 rounded-full flex items-center justify-center shadow-lg transition-colors active:scale-95 disabled:opacity-50
               ${state === STATES.RECORDING
                 ? "bg-red-500 hover:bg-red-600"
-                : "bg-[#FF5A1F] hover:bg-[#e04a15]"
+                : "bg-[#CC5500] hover:bg-[#AA4400]"
               }`}
           >
             {state === STATES.RECORDING ? (
@@ -130,7 +130,7 @@ export default function MicRecorder({ onResult, onClose, apiUrl }) {
                 {[1, 2, 3, 4, 5].map((i) => (
                   <div
                     key={i}
-                    className="w-1.5 bg-[#FF5A1F] rounded-full sound-bar"
+                    className="w-1.5 bg-[#CC5500] rounded-full sound-bar"
                     style={{ animationDelay: `${i * 0.12}s`, height: "100%" }}
                   />
                 ))}
@@ -140,7 +140,7 @@ export default function MicRecorder({ onResult, onClose, apiUrl }) {
           )}
           {state === STATES.PROCESSING && (
             <div className="flex items-center gap-2 text-gray-600 text-sm">
-              <div className="w-4 h-4 border-2 border-[#FF5A1F] border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-[#CC5500] border-t-transparent rounded-full animate-spin" />
               Analyzing recording...
             </div>
           )}
@@ -156,7 +156,7 @@ export default function MicRecorder({ onResult, onClose, apiUrl }) {
           <button
             data-testid="mic-retry-btn"
             onClick={() => setState(STATES.IDLE)}
-            className="text-sm font-medium text-[#FF5A1F] hover:underline"
+            className="text-sm font-medium text-[#CC5500] hover:underline"
           >
             Try again
           </button>

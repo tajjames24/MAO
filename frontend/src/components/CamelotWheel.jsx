@@ -66,15 +66,15 @@ export default function CamelotWheel({ activeCode, compatibleCodes = [] }) {
           const isMinorCompat = compatibleCodes.includes(minor.code);
 
           const majorFill = isMajorActive
-            ? "#FF5A1F"
+            ? "#CC5500"
             : isMajorCompat
-            ? "#FFD5C2"
+            ? "#FFCCA8"
             : "#F3F4F6";
 
           const minorFill = isMinorActive
-            ? "#FF5A1F"
+            ? "#CC5500"
             : isMinorCompat
-            ? "#FFD5C2"
+            ? "#FFCCA8"
             : "#E9EBEE";
 
           const majorTextColor = isMajorActive ? "#fff" : isMajorCompat ? "#c43d00" : "#6B7280";
@@ -165,7 +165,7 @@ export default function CamelotWheel({ activeCode, compatibleCodes = [] }) {
             fontSize="14"
             fontWeight="900"
             fontFamily="Manrope, sans-serif"
-            fill="#FF5A1F"
+            fill="#CC5500"
           >
             {activeCode}
           </text>
@@ -188,11 +188,11 @@ export default function CamelotWheel({ activeCode, compatibleCodes = [] }) {
       {/* Legend */}
       <div className="flex gap-4 text-xs text-gray-500">
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded bg-[#FF5A1F]" />
+          <div className="w-3 h-3 rounded bg-[#CC5500]" />
           <span>Active</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded bg-[#FFD5C2]" />
+          <div className="w-3 h-3 rounded bg-[#FFCCA8]" />
           <span>Compatible</span>
         </div>
         <div className="flex items-center gap-1.5">

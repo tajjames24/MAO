@@ -31,7 +31,7 @@ export default function ResultsPanel({ result, audioUrl, onReset, onExport }) {
           <button
             data-testid="export-btn"
             onClick={onExport}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-gray-200 rounded-full hover:border-[#FF5A1F] hover:text-[#FF5A1F] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-gray-200 rounded-full hover:border-[#CC5500] hover:text-[#CC5500] transition-colors"
           >
             <Download className="w-4 h-4" strokeWidth={1.5} />
             Export
@@ -39,7 +39,7 @@ export default function ResultsPanel({ result, audioUrl, onReset, onExport }) {
           <button
             data-testid="reset-btn"
             onClick={onReset}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#FF5A1F] rounded-full hover:bg-[#e04a15] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#CC5500] rounded-full hover:bg-[#AA4400] transition-colors"
           >
             <RotateCcw className="w-4 h-4" strokeWidth={1.5} />
             New Track
@@ -52,7 +52,7 @@ export default function ResultsPanel({ result, audioUrl, onReset, onExport }) {
         {/* Key – large card */}
         <div
           data-testid="key-card"
-          className="col-span-2 md:col-span-1 bg-[#FF5A1F] text-white rounded-2xl p-6 flex flex-col gap-2 animate-fade-up stagger-1 shadow-sm"
+          className="col-span-2 md:col-span-1 bg-[#CC5500] text-white rounded-2xl p-6 flex flex-col gap-2 animate-fade-up stagger-1 shadow-sm"
         >
           <div className="flex items-center gap-2 opacity-80">
             <Music className="w-4 h-4" strokeWidth={1.5} />
@@ -67,7 +67,7 @@ export default function ResultsPanel({ result, audioUrl, onReset, onExport }) {
         </div>
 
         {/* Scale */}
-        <div data-testid="scale-card" className="bg-white border border-gray-100 rounded-2xl p-6 flex flex-col gap-3 animate-fade-up stagger-2 shadow-sm hover:border-[#FF5A1F]/20 transition-colors">
+        <div data-testid="scale-card" className="bg-white border border-gray-100 rounded-2xl p-6 flex flex-col gap-3 animate-fade-up stagger-2 shadow-sm hover:border-[#CC5500]/20 transition-colors">
           <div className="flex items-center gap-2 text-gray-400">
             <TrendingUp className="w-4 h-4" strokeWidth={1.5} />
             <span className="text-xs font-mono uppercase tracking-widest">Scale</span>
@@ -81,7 +81,7 @@ export default function ResultsPanel({ result, audioUrl, onReset, onExport }) {
         </div>
 
         {/* BPM */}
-        <div data-testid="bpm-card" className="bg-white border border-gray-100 rounded-2xl p-6 flex flex-col gap-3 animate-fade-up stagger-3 shadow-sm hover:border-[#FF5A1F]/20 transition-colors">
+        <div data-testid="bpm-card" className="bg-white border border-gray-100 rounded-2xl p-6 flex flex-col gap-3 animate-fade-up stagger-3 shadow-sm hover:border-[#CC5500]/20 transition-colors">
           <div className="flex items-center gap-2 text-gray-400">
             <Activity className="w-4 h-4" strokeWidth={1.5} />
             <span className="text-xs font-mono uppercase tracking-widest">Tempo</span>
@@ -96,7 +96,7 @@ export default function ResultsPanel({ result, audioUrl, onReset, onExport }) {
         </div>
 
         {/* Confidence */}
-        <div data-testid="confidence-card" className="bg-white border border-gray-100 rounded-2xl p-6 flex flex-col gap-3 animate-fade-up stagger-4 shadow-sm hover:border-[#FF5A1F]/20 transition-colors">
+        <div data-testid="confidence-card" className="bg-white border border-gray-100 rounded-2xl p-6 flex flex-col gap-3 animate-fade-up stagger-4 shadow-sm hover:border-[#CC5500]/20 transition-colors">
           <div className="flex items-center gap-2 text-gray-400">
             <Clock className="w-4 h-4" strokeWidth={1.5} />
             <span className="text-xs font-mono uppercase tracking-widest">Confidence</span>
@@ -107,7 +107,7 @@ export default function ResultsPanel({ result, audioUrl, onReset, onExport }) {
           </div>
           <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#FF5A1F] rounded-full transition-all duration-700"
+              className="h-full bg-[#CC5500] rounded-full transition-all duration-700"
               style={{ width: `${confidence}%` }}
             />
           </div>
@@ -135,10 +135,10 @@ export default function ResultsPanel({ result, audioUrl, onReset, onExport }) {
             {compatible_keys.map((ck) => (
               <div
                 key={ck.code}
-                className="flex items-center gap-2 px-4 py-2.5 border border-gray-100 rounded-xl hover:border-[#FF5A1F]/30 transition-colors group"
+                className="flex items-center gap-2 px-4 py-2.5 border border-gray-100 rounded-xl hover:border-[#CC5500]/30 transition-colors group"
                 data-testid={`compatible-key-${ck.code}`}
               >
-                <div className="w-8 h-8 bg-[#FF5A1F]/10 text-[#FF5A1F] rounded-lg flex items-center justify-center text-xs font-bold font-mono group-hover:bg-[#FF5A1F] group-hover:text-white transition-colors">
+                <div className="w-8 h-8 bg-[#CC5500]/10 text-[#CC5500] rounded-lg flex items-center justify-center text-xs font-bold font-mono group-hover:bg-[#CC5500] group-hover:text-white transition-colors">
                   {ck.code}
                 </div>
                 <div>
