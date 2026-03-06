@@ -179,11 +179,16 @@ async def analyze_audio_file(file_path: str, filename: str) -> dict:
         cens = librosa.feature.chroma_cens(y=y_harmonic, sr=sr, hop_length=hop)
         cqt  = librosa.feature.chroma_cqt(y=y_harmonic, sr=sr, hop_length=hop,
                                            bins_per_octave=36)
-        chroma_mean = 0.6 * np.mean(cens, axis=1) + 0.4 * np.mean(cqt, axis=1)
+        raw_chroma = 0.6 * np.mean(cens, axis=1) + 0.4 * np.mean(cqt, axis=1)
     except Exception as e:
         logger.warning(f"CENS/CQT failed ({e}), falling back to STFT chroma")
         chroma = librosa.feature.chroma_stft(y=y_harmonic, sr=sr, hop_length=hop)
-        chroma_mean = np.mean(chroma, axis=1)
+        raw_chroma = np.mean(chroma, axis=1)
+
+    # Cube-root compression: prevents a single dominant melody note from
+    # hijacking the correlation (e.g. b6 in minor key mistaken for tonic).
+    # Preserves relative pitch-class importance while equalising dynamics.
+    chroma_mean = np.cbrt(raw_chroma)
 
     key_idx, scale_type, confidence = detect_key_and_scale(chroma_mean)
     note = NOTE_NAMES[key_idx]
