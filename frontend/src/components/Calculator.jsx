@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDealCalculator } from '../hooks/useDealCalculator';
 import {
   ChevronDown, ChevronUp, Save, RotateCcw,
-  BookOpen, Copy, FileText, X, Info
+  BookOpen, Copy, FileText, X, Info, Menu
 } from 'lucide-react';
 import { toast } from 'sonner';
 import jsPDF from 'jspdf';
@@ -93,7 +93,7 @@ function ResultCard({ label, value, isHero, colorClass, testId, subtext }) {
   );
 }
 
-export default function Calculator() {
+export default function Calculator({ onMenuClick, prefilledValues }) {
   const [inputs, setInputs] = useState(DEFAULT);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [savedDeals, setSavedDeals] = useState([]);
@@ -108,6 +108,17 @@ export default function Calculator() {
     const saved = JSON.parse(localStorage.getItem('wholesale_deals') || '[]');
     setSavedDeals(saved);
   }, []);
+
+  useEffect(() => {
+    if (prefilledValues?.arv) {
+      setInputs(prev => ({
+        ...prev,
+        arv: prefilledValues.arv,
+        ...(prefilledValues.repairCost ? { repairCost: prefilledValues.repairCost } : {}),
+      }));
+      toast.success('ARV loaded from Comp Generator!');
+    }
+  }, [prefilledValues]);
 
   const setField = (field) => (val) => setInputs(prev => ({ ...prev, [field]: val }));
 
@@ -263,7 +274,14 @@ DEAL SCORE: ${(calcs.dealScore.label || 'N/A').toUpperCase()}
       {/* HEADER */}
       <header className="sticky top-0 z-50 bg-white border-b-2 border-[#E5E7EB]">
         <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <button
+              data-testid="calc-menu-btn"
+              onClick={onMenuClick}
+              className="p-1.5 hover:bg-[#FFF7ED] rounded transition-colors"
+            >
+              <Menu className="w-5 h-5 text-[#1A1A1A]" />
+            </button>
             <span
               className="text-2xl font-black text-[#FF7A00] tracking-tight"
               style={{ fontFamily: 'Chivo, sans-serif' }}
