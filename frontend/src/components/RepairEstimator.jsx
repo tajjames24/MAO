@@ -58,12 +58,16 @@ const REPAIR_CATEGORIES = [
 ];
 
 const SQFT_RANGES = [
-  { label: 'Under 1,500 sqft', light: 18750, avg: 37500, heavy: 70000 },
-  { label: '1,500–2,500 sqft', light: 25000, avg: 50000, heavy: 90000 },
-  { label: '2,500–3,500 sqft', light: 37500, avg: 62500, heavy: 125000 },
+  { label: '< 1,500 sqft', light: 18750, avg: 37500, heavy: 70000 },
+  { label: '1.5K–2.5K sqft', light: 25000, avg: 50000, heavy: 90000 },
+  { label: '2.5K–3.5K sqft', light: 37500, avg: 62500, heavy: 125000 },
 ];
 
 const fmt = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val || 0);
+const fmtShort = (val) => {
+  if (val >= 1000) return `$${(val / 1000).toFixed(0)}K`;
+  return `$${val}`;
+};
 const formatInput = (val) => {
   if (!val) return '';
   const parts = String(val).split('.');
@@ -78,7 +82,7 @@ function GlassCard({ children, className = '', glow = false, isDark }) {
       {glow && isDark && (
         <div className="absolute -inset-px bg-gradient-to-b from-[#FF7A1A]/20 to-transparent rounded-2xl pointer-events-none" />
       )}
-      <div className={`relative h-full ${isDark ? 'bg-[#1A1D24]/80 backdrop-blur-xl border border-[#2A2F3A]' : 'bg-white border border-gray-200 shadow-xl shadow-gray-200/50'} rounded-2xl`}>
+      <div className={`relative h-full ${isDark ? 'bg-[#1A1D24] border border-[#252830]' : 'bg-white border border-gray-200 shadow-xl shadow-gray-200/50'} rounded-2xl`}>
         {children}
       </div>
     </div>
@@ -150,19 +154,19 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
               <Grid3X3 className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className={`font-bold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>Quick Estimate</h3>
-              <p className={`text-xs ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>Calculate by square footage</p>
+              <h3 className={`font-bold text-lg ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>Quick Estimate</h3>
+              <p className={`text-xs ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>Calculate by square footage</p>
             </div>
           </div>
           
           {/* Square Footage Input */}
-          <div className={`group relative rounded-xl mb-5 transition-all duration-200 ${isDark ? 'bg-[#0F1115] border border-[#2A2F3A] focus-within:border-[#FF7A1A] focus-within:shadow-lg focus-within:shadow-[#FF7A1A]/10' : 'bg-gray-50 border border-gray-200 focus-within:border-[#FF7A1A]'}`}>
+          <div className={`group relative rounded-xl mb-5 transition-all duration-200 ${isDark ? 'bg-[#0F1115] border border-[#252830] focus-within:border-[#FF7A1A] focus-within:shadow-lg focus-within:shadow-[#FF7A1A]/10' : 'bg-gray-50 border border-gray-200 focus-within:border-[#FF7A1A]'}`}>
             <div className="flex items-center gap-3 p-4">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${isDark ? 'bg-[#1A1D24]' : 'bg-gray-100'}`}>
-                <Home className={`w-5 h-5 ${isDark ? 'text-[#A0A6B0]' : 'text-gray-400'}`} />
+                <Home className={`w-5 h-5 ${isDark ? 'text-[#6B7280]' : 'text-gray-400'}`} />
               </div>
               <div className="flex-1">
-                <label className={`text-xs font-medium uppercase tracking-wider ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>Square Footage</label>
+                <label className={`text-xs font-medium uppercase tracking-wider ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>Square Footage</label>
                 <input
                   data-testid="repair-sqft-input"
                   type="text"
@@ -170,7 +174,7 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
                   value={formatInput(sqft)}
                   onChange={e => setSqft(e.target.value.replace(/[^0-9]/g, ''))}
                   placeholder="e.g. 1,343"
-                  className={`w-full bg-transparent font-bold text-xl mt-0.5 focus:outline-none placeholder:opacity-30 ${isDark ? 'text-white' : 'text-gray-900'}`}
+                  className={`w-full bg-transparent font-bold text-xl mt-0.5 focus:outline-none placeholder:opacity-30 ${isDark ? 'text-[#E5E5E5] placeholder:text-[#4B5563]' : 'text-gray-900 placeholder:text-gray-400'}`}
                 />
               </div>
             </div>
@@ -189,7 +193,7 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
                     isSelected 
                       ? 'ring-2 ring-offset-2 shadow-lg' 
                       : isDark 
-                        ? 'bg-[#0F1115] border border-[#2A2F3A] hover:border-[#FF7A1A]/50' 
+                        ? 'bg-[#0F1115] border border-[#252830] hover:border-[#FF7A1A]/50' 
                         : 'bg-gray-50 border border-gray-200 hover:border-gray-300'
                   }`}
                   style={isSelected ? { 
@@ -200,13 +204,13 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: level.color, boxShadow: isSelected ? `0 0 10px ${level.color}` : 'none' }} />
-                    <span className={`font-bold text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>{level.label}</span>
+                    <span className={`font-bold text-sm ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>{level.label}</span>
                   </div>
                   <p className="font-black text-lg" style={{ color: level.color }}>
                     ${level.min}–${level.max}
-                    <span className={`text-xs font-normal ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>/sqft</span>
+                    <span className={`text-xs font-normal ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>/sqft</span>
                   </p>
-                  <p className={`text-xs mt-1 ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>{level.desc}</p>
+                  <p className={`text-xs mt-1 ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>{level.desc}</p>
                   {isSelected && (
                     <div className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: level.color }}>
                       <Check className="w-3 h-3 text-white" />
@@ -219,18 +223,18 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
 
           {/* Quick Estimate Result */}
           {quickEstimate && sqftValue > 0 && (
-            <div className={`mt-6 p-5 rounded-xl border ${isDark ? 'bg-[#0F1115] border-[#2A2F3A]' : 'bg-gray-50 border-gray-200'}`}>
+            <div className={`mt-6 p-5 rounded-xl border ${isDark ? 'bg-[#0F1115] border-[#252830]' : 'bg-gray-50 border-gray-200'}`}>
               <div className="flex items-center gap-2 mb-3">
                 <Sparkles className="w-4 h-4 text-[#FF7A1A]" />
-                <p className={`text-xs font-semibold uppercase tracking-wider ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>Estimated Repair Cost</p>
+                <p className={`text-xs font-semibold uppercase tracking-wider ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>Estimated Repair Cost</p>
               </div>
-              <p className={`font-black text-4xl mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+              <p className={`font-black text-4xl mb-2 ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>
                 {fmt(quickEstimate.avg)}
               </p>
-              <p className={`text-sm ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>
-                Range: <strong>{fmt(quickEstimate.min)}</strong> – <strong>{fmt(quickEstimate.max)}</strong>
+              <p className={`text-sm ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>
+                Range: <strong className={isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}>{fmt(quickEstimate.min)}</strong> – <strong className={isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}>{fmt(quickEstimate.max)}</strong>
               </p>
-              <p className={`text-xs mt-2 ${isDark ? 'text-[#A0A6B0]/60' : 'text-gray-400'}`}>
+              <p className={`text-xs mt-2 ${isDark ? 'text-[#4B5563]' : 'text-gray-400'}`}>
                 {sqftValue.toLocaleString()} sqft × ${((selectedLevel.min + selectedLevel.max) / 2).toFixed(0)}/sqft
               </p>
             </div>
@@ -243,41 +247,41 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
         <button
           data-testid="advanced-repair-toggle"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className={`w-full flex items-center justify-between p-5 transition-colors ${isDark ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
+          className={`w-full flex items-center justify-between p-5 transition-colors ${isDark ? 'hover:bg-[#0F1115]' : 'hover:bg-gray-50'}`}
         >
           <div className="flex items-center gap-3">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? 'bg-[#0F1115]' : 'bg-gray-100'}`}>
-              <Wrench className={`w-5 h-5 ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`} />
+              <Wrench className={`w-5 h-5 ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`} />
             </div>
             <div className="text-left">
-              <span className={`font-bold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>Advanced Itemized</span>
+              <span className={`font-bold text-lg ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>Advanced Itemized</span>
               {selectedItemCount > 0 && (
                 <span className="ml-2 bg-[#FF7A1A] text-white text-xs font-bold px-2 py-0.5 rounded-full">{selectedItemCount}</span>
               )}
-              <p className={`text-xs ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>Select individual repairs</p>
+              <p className={`text-xs ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>Select individual repairs</p>
             </div>
           </div>
-          <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${showAdvanced ? 'bg-[#FF7A1A] text-white rotate-180' : isDark ? 'bg-[#0F1115] text-[#A0A6B0]' : 'bg-gray-100 text-gray-400'}`}>
+          <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${showAdvanced ? 'bg-[#FF7A1A] text-white rotate-180' : isDark ? 'bg-[#0F1115] text-[#6B7280]' : 'bg-gray-100 text-gray-400'}`}>
             <ChevronDown className="w-4 h-4" />
           </div>
         </button>
 
         {showAdvanced && (
-          <div className={`border-t ${isDark ? 'border-[#2A2F3A]' : 'border-gray-200'}`}>
+          <div className={`border-t ${isDark ? 'border-[#252830]' : 'border-gray-200'}`}>
             {REPAIR_CATEGORIES.map(category => {
               const CategoryIcon = category.icon;
               const isExpanded = expandedCategories[category.name];
               return (
-                <div key={category.name} className={`border-b last:border-b-0 ${isDark ? 'border-[#2A2F3A]/50' : 'border-gray-100'}`}>
+                <div key={category.name} className={`border-b last:border-b-0 ${isDark ? 'border-[#252830]/50' : 'border-gray-100'}`}>
                   <button
                     onClick={() => setExpandedCategories(prev => ({ ...prev, [category.name]: !prev[category.name] }))}
-                    className={`w-full flex items-center justify-between px-5 py-3 transition-colors ${isDark ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}
+                    className={`w-full flex items-center justify-between px-5 py-3 transition-colors ${isDark ? 'hover:bg-[#0F1115]' : 'hover:bg-gray-50'}`}
                   >
                     <div className="flex items-center gap-2">
-                      <CategoryIcon className={`w-4 h-4 ${isDark ? 'text-[#A0A6B0]' : 'text-gray-400'}`} />
-                      <span className={`text-sm font-semibold ${isDark ? 'text-[#A0A6B0]' : 'text-gray-600'}`}>{category.name}</span>
+                      <CategoryIcon className={`w-4 h-4 ${isDark ? 'text-[#6B7280]' : 'text-gray-400'}`} />
+                      <span className={`text-sm font-semibold ${isDark ? 'text-[#6B7280]' : 'text-gray-600'}`}>{category.name}</span>
                     </div>
-                    {isExpanded ? <ChevronUp className="w-4 h-4 opacity-40" /> : <ChevronDown className="w-4 h-4 opacity-40" />}
+                    {isExpanded ? <ChevronUp className={`w-4 h-4 ${isDark ? 'text-[#4B5563]' : 'text-gray-400'}`} /> : <ChevronDown className={`w-4 h-4 ${isDark ? 'text-[#4B5563]' : 'text-gray-400'}`} />}
                   </button>
                   
                   {isExpanded && (
@@ -302,19 +306,19 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
                               className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-all ${
                                 isSelected 
                                   ? 'bg-gradient-to-br from-[#FF7A1A] to-[#FF9A3C] shadow-lg shadow-[#FF7A1A]/30' 
-                                  : isDark ? 'bg-[#1A1D24] hover:bg-[#2A2F3A]' : 'bg-gray-200 hover:bg-gray-300'
+                                  : isDark ? 'bg-[#1A1D24] hover:bg-[#252830]' : 'bg-gray-200 hover:bg-gray-300'
                               }`}
                             >
                               {isSelected && <Check className="w-4 h-4 text-white" />}
                             </button>
                             
                             <div className="flex-1 min-w-0">
-                              <p className={`font-medium text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>{item.label}</p>
+                              <p className={`font-medium text-sm ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>{item.label}</p>
                             </div>
                             
                             {item.qty && isSelected && (
                               <div className="flex items-center gap-2">
-                                <span className={`text-xs ${isDark ? 'text-[#A0A6B0]' : 'text-gray-400'}`}>Qty:</span>
+                                <span className={`text-xs ${isDark ? 'text-[#6B7280]' : 'text-gray-400'}`}>Qty:</span>
                                 <input
                                   type="text"
                                   inputMode="numeric"
@@ -322,16 +326,16 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
                                   onChange={e => updateQuantity(item.id, e.target.value)}
                                   onFocus={e => e.target.select()}
                                   placeholder="1"
-                                  className={`w-12 text-center rounded-lg py-1 text-sm font-semibold ${isDark ? 'bg-[#1A1D24] text-white' : 'bg-white border border-gray-200 text-gray-900'}`}
+                                  className={`w-12 text-center rounded-lg py-1 text-sm font-semibold ${isDark ? 'bg-[#1A1D24] text-[#E5E5E5]' : 'bg-white border border-gray-200 text-gray-900'}`}
                                 />
                               </div>
                             )}
                             
                             <div className="text-right shrink-0">
-                              <p className={`font-bold text-sm ${isSelected ? 'text-[#FF7A1A]' : isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>
+                              <p className={`font-bold text-sm ${isSelected ? 'text-[#FF7A1A]' : isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>
                                 {isSelected && item.qty ? fmt(itemTotal) : fmt(item.cost)}
                               </p>
-                              {item.qty && !isSelected && <p className={`text-xs ${isDark ? 'text-[#A0A6B0]/50' : 'text-gray-400'}`}>each</p>}
+                              {item.qty && !isSelected && <p className={`text-xs ${isDark ? 'text-[#4B5563]' : 'text-gray-400'}`}>each</p>}
                             </div>
                           </div>
                         );
@@ -343,10 +347,10 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
             })}
 
             {advancedTotal > 0 && (
-              <div className={`p-5 ${isDark ? 'bg-[#0F1115]/50' : 'bg-gray-50'}`}>
+              <div className={`p-5 ${isDark ? 'bg-[#0F1115]' : 'bg-gray-50'}`}>
                 <div className="flex items-center justify-between">
-                  <p className={`text-sm font-semibold ${isDark ? 'text-[#A0A6B0]' : 'text-gray-600'}`}>Itemized Total</p>
-                  <p className={`font-black text-2xl ${isDark ? 'text-white' : 'text-gray-900'}`}>{fmt(advancedTotal)}</p>
+                  <p className={`text-sm font-semibold ${isDark ? 'text-[#6B7280]' : 'text-gray-600'}`}>Itemized Total</p>
+                  <p className={`font-black text-2xl ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>{fmt(advancedTotal)}</p>
                 </div>
               </div>
             )}
@@ -388,56 +392,56 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
         </div>
       )}
 
-      {/* Reference Table */}
+      {/* Reference Table - Compact, No Scroll */}
       <GlassCard isDark={isDark}>
-        <div className={`px-5 py-4 flex items-center gap-3 border-b ${isDark ? 'border-[#2A2F3A]' : 'border-gray-200'}`}>
+        <div className={`px-5 py-4 flex items-center gap-3 border-b ${isDark ? 'border-[#252830]' : 'border-gray-200'}`}>
           <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDark ? 'bg-[#0F1115]' : 'bg-gray-100'}`}>
-            <DollarSign className={`w-4 h-4 ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`} />
+            <DollarSign className={`w-4 h-4 ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`} />
           </div>
           <div>
-            <p className={`font-bold text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}>Reference by Size</p>
-            <p className={`text-xs ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>Click any price to send to calculator</p>
+            <p className={`font-bold text-sm ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>Reference by Size</p>
+            <p className={`text-xs ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>Tap any price to sync</p>
           </div>
         </div>
-        <div className="overflow-x-auto">
+        <div className="p-4">
           <table className="w-full text-sm">
             <thead>
-              <tr className={isDark ? 'bg-[#0F1115]/50' : 'bg-gray-50'}>
-                <th className={`px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>Property Size</th>
-                <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-green-500">Light</th>
-                <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-yellow-500">Medium</th>
-                <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-orange-500">Heavy</th>
+              <tr>
+                <th className={`py-2 text-left text-xs font-semibold uppercase tracking-wider ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>Size</th>
+                <th className="py-2 text-center text-xs font-semibold uppercase tracking-wider text-green-500">Light</th>
+                <th className="py-2 text-center text-xs font-semibold uppercase tracking-wider text-yellow-500">Med</th>
+                <th className="py-2 text-center text-xs font-semibold uppercase tracking-wider text-orange-500">Heavy</th>
               </tr>
             </thead>
             <tbody>
               {SQFT_RANGES.map((range, i) => (
-                <tr key={i} className={`border-t ${isDark ? 'border-[#2A2F3A]/50' : 'border-gray-100'}`}>
-                  <td className={`px-5 py-4 font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{range.label}</td>
-                  <td className="px-5 py-4 text-center">
+                <tr key={i} className={`border-t ${isDark ? 'border-[#252830]/50' : 'border-gray-100'}`}>
+                  <td className={`py-3 font-medium text-xs ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>{range.label}</td>
+                  <td className="py-3 text-center">
                     <button
                       data-testid={`ref-light-${i}`}
                       onClick={() => handleSync(range.light)}
-                      className="font-bold text-green-500 hover:text-green-400 hover:underline transition-all cursor-pointer hover:scale-105"
+                      className="font-bold text-green-500 hover:text-green-400 hover:underline transition-all cursor-pointer text-xs"
                     >
-                      {fmt(range.light)}
+                      {fmtShort(range.light)}
                     </button>
                   </td>
-                  <td className="px-5 py-4 text-center">
+                  <td className="py-3 text-center">
                     <button
                       data-testid={`ref-medium-${i}`}
                       onClick={() => handleSync(range.avg)}
-                      className="font-bold text-yellow-500 hover:text-yellow-400 hover:underline transition-all cursor-pointer hover:scale-105"
+                      className="font-bold text-yellow-500 hover:text-yellow-400 hover:underline transition-all cursor-pointer text-xs"
                     >
-                      {fmt(range.avg)}
+                      {fmtShort(range.avg)}
                     </button>
                   </td>
-                  <td className="px-5 py-4 text-center">
+                  <td className="py-3 text-center">
                     <button
                       data-testid={`ref-heavy-${i}`}
                       onClick={() => handleSync(range.heavy)}
-                      className="font-bold text-orange-500 hover:text-orange-400 hover:underline transition-all cursor-pointer hover:scale-105"
+                      className="font-bold text-orange-500 hover:text-orange-400 hover:underline transition-all cursor-pointer text-xs"
                     >
-                      {fmt(range.heavy)}
+                      {fmtShort(range.heavy)}
                     </button>
                   </td>
                 </tr>
@@ -453,7 +457,7 @@ export default function RepairEstimator({ onSyncToCalculator, isDark }) {
           <button
             data-testid="clear-estimator-btn"
             onClick={clearAll}
-            className={`text-sm font-semibold px-6 py-2 rounded-xl transition-all ${isDark ? 'text-[#A0A6B0] hover:text-white hover:bg-[#1A1D24]' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'}`}
+            className={`text-sm font-semibold px-6 py-2 rounded-xl transition-all ${isDark ? 'text-[#6B7280] hover:text-[#E5E5E5] hover:bg-[#1A1D24]' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'}`}
           >
             Clear Estimator
           </button>
