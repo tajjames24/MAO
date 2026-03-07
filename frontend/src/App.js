@@ -34,30 +34,35 @@ function App() {
   };
 
   return (
-    <div className={`App min-h-screen transition-colors duration-200 ${isDark ? 'bg-[#111111]' : 'bg-white'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
+    <div className={`App min-h-screen transition-colors duration-300 ${isDark ? 'bg-[#0a0a1a]' : 'bg-gray-50'}`} style={{ fontFamily: 'Inter, sans-serif' }}>
       <Toaster position="top-right" richColors closeButton />
       
       {/* Header */}
-      <header className={`sticky top-0 z-50 border-b-2 transition-colors duration-200 ${isDark ? 'bg-[#111111] border-[#333]' : 'bg-white border-[#E5E7EB]'}`}>
+      <header className={`sticky top-0 z-50 backdrop-blur-xl transition-colors duration-300 ${isDark ? 'bg-[#0a0a1a]/80 border-b border-white/10' : 'bg-white/80 border-b border-gray-200'}`}>
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="h-16 flex items-center justify-between">
             {/* Logo */}
-            <span className="text-2xl font-black text-[#FF7A00] tracking-tight" style={{ fontFamily: 'Chivo, sans-serif' }}>
-              BUYWISE
-            </span>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-[#FF7A00] to-[#FF9A40] rounded-lg flex items-center justify-center">
+                <CalcIcon className="w-4 h-4 text-white" />
+              </div>
+              <span className={`text-xl font-black tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                <span className="text-[#FF7A00]">BUY</span>WISE
+              </span>
+            </div>
             
             {/* Dark Mode Toggle */}
             <button 
               data-testid="theme-toggle-btn" 
               onClick={toggleDark}
-              className={`p-2 rounded-full border-2 transition-all ${isDark ? 'border-[#333] text-yellow-400 hover:bg-[#2D2D2D]' : 'border-[#E5E7EB] text-[#1A1A1A] hover:bg-[#FFF7ED]'}`}
+              className={`p-2.5 rounded-xl transition-all ${isDark ? 'bg-white/10 text-yellow-400 hover:bg-white/20' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
             >
-              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
           </div>
           
           {/* Tab Navigation */}
-          <div className="flex gap-1 -mb-[2px]">
+          <div className="flex gap-2 pb-4">
             {TABS.map(tab => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -66,16 +71,16 @@ function App() {
                   key={tab.id}
                   data-testid={`tab-${tab.id}`}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-5 py-3 font-bold text-sm uppercase tracking-wider border-2 border-b-0 transition-all ${
+                  className={`flex items-center gap-2 px-5 py-2.5 font-semibold text-sm rounded-xl transition-all ${
                     isActive
-                      ? 'bg-[#FF7A00] text-white border-[#1A1A1A] -mb-[2px] relative z-10'
+                      ? 'bg-gradient-to-r from-[#FF7A00] to-[#FF9A40] text-white shadow-lg shadow-orange-500/25'
                       : isDark
-                        ? 'bg-[#1E1E1E] text-white/60 border-[#333] hover:text-white hover:bg-[#2C1A00]'
-                        : 'bg-[#F5F5F5] text-[#1A1A1A]/60 border-[#E5E7EB] hover:text-[#1A1A1A] hover:bg-[#FFF7ED]'
+                        ? 'bg-white/5 text-white/60 hover:text-white hover:bg-white/10'
+                        : 'bg-gray-100 text-gray-500 hover:text-gray-900 hover:bg-gray-200'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
-                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span>{tab.label}</span>
                 </button>
               );
             })}
@@ -84,7 +89,7 @@ function App() {
       </header>
 
       {/* Content */}
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12 pb-24">
+      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8 pb-24">
         {activeTab === 'calculator' && (
           <Calculator 
             prefilledValues={prefilledValues} 
