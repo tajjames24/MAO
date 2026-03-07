@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Toaster } from "sonner";
 import Calculator from "./components/Calculator";
 import RepairEstimator from "./components/RepairEstimator";
-import { Sun, Moon, Calculator as CalcIcon, Wrench, TrendingUp, DollarSign, Home } from "lucide-react";
+import { Sun, Moon, Calculator as CalcIcon, Wrench, Home } from "lucide-react";
 import "./App.css";
 
 const TABS = [
@@ -35,19 +35,18 @@ function App() {
   return (
     <div className={`App min-h-screen transition-colors duration-300 relative overflow-hidden ${isDark ? 'bg-[#0F1115]' : 'bg-[#F8F9FB]'}`} style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
       
-      {/* Animated Grid Background */}
+      {/* Animated Grid Background - Dark Mode Only */}
       {isDark && (
         <div className="fixed inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,122,26,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,122,26,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[#FF7A1A] opacity-[0.03] blur-[150px] rounded-full" />
-          <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-[#FF7A1A] opacity-[0.02] blur-[100px] rounded-full" />
         </div>
       )}
       
       <Toaster position="top-right" richColors closeButton theme={isDark ? "dark" : "light"} />
       
-      {/* Top Navigation Bar */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${isDark ? 'bg-[#0F1115]/80 border-b border-[#2A2F3A]' : 'bg-white/80 border-b border-gray-200'} backdrop-blur-xl`}>
+      {/* Top Navigation Bar - Matching Background */}
+      <header className={`sticky top-0 z-50 transition-all duration-300 ${isDark ? 'bg-[#0F1115] border-b border-[#1A1D24]' : 'bg-[#F8F9FB] border-b border-gray-200'}`}>
         <div className="max-w-7xl mx-auto px-6 md:px-8">
           <div className="h-16 flex items-center justify-between">
             {/* Logo */}
@@ -56,10 +55,9 @@ function App() {
                 <div className="w-9 h-9 bg-gradient-to-br from-[#FF7A1A] to-[#FF9A3C] rounded-xl flex items-center justify-center shadow-lg shadow-[#FF7A1A]/20">
                   <Home className="w-5 h-5 text-white" />
                 </div>
-                <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-6 h-1 bg-[#FF7A1A] rounded-full blur-sm" />
               </div>
               <div>
-                <span className={`text-xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                <span className={`text-xl font-bold tracking-tight ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>
                   Buy<span className="text-[#FF7A1A]">Wise</span>
                 </span>
                 <div className="h-0.5 w-full bg-gradient-to-r from-[#FF7A1A] to-transparent rounded-full mt-0.5" />
@@ -71,7 +69,7 @@ function App() {
               <button 
                 data-testid="theme-toggle-btn" 
                 onClick={toggleDark}
-                className={`p-2.5 rounded-xl transition-all duration-200 ${isDark ? 'bg-[#1A1D24] text-[#A0A6B0] hover:text-[#FF7A1A] hover:bg-[#1A1D24]/80' : 'bg-gray-100 text-gray-600 hover:text-[#FF7A1A] hover:bg-gray-200'}`}
+                className={`p-2.5 rounded-xl transition-all duration-200 ${isDark ? 'bg-[#1A1D24] text-[#FF7A1A] hover:bg-[#252830]' : 'bg-gray-100 text-gray-600 hover:text-[#FF7A1A] hover:bg-gray-200'}`}
               >
                 {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
@@ -80,15 +78,15 @@ function App() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <div className={`relative pt-8 pb-6 px-6 md:px-8 ${isDark ? '' : 'bg-gradient-to-b from-white to-[#F8F9FB]'}`}>
+      {/* Hero Section - Title always visible */}
+      <div className={`relative pt-8 pb-6 px-6 md:px-8 ${isDark ? 'bg-[#0F1115]' : 'bg-[#F8F9FB]'}`}>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className={`text-3xl md:text-4xl font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            <h1 className={`text-3xl md:text-4xl font-bold mb-3 ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>
               Wholesale Real Estate Calculator
             </h1>
-            <p className={`text-base md:text-lg ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>
-              Analyze deals instantly and find profitable investments
+            <p className={`text-base md:text-lg ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>
+              Know the Deal Before You Buy
             </p>
           </div>
 
@@ -106,7 +104,7 @@ function App() {
                     isActive
                       ? 'bg-gradient-to-r from-[#FF7A1A] to-[#FF9A3C] text-white shadow-lg shadow-[#FF7A1A]/30'
                       : isDark
-                        ? 'bg-[#1A1D24] text-[#A0A6B0] hover:text-white hover:bg-[#1A1D24]/80 border border-[#2A2F3A]'
+                        ? 'bg-[#1A1D24] text-[#6B7280] hover:text-[#E5E5E5] hover:bg-[#252830] border border-[#252830]'
                         : 'bg-white text-gray-500 hover:text-gray-900 hover:bg-gray-50 border border-gray-200 shadow-sm'
                   }`}
                 >
@@ -137,7 +135,7 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className={`fixed bottom-0 left-0 right-0 py-3 text-center text-xs ${isDark ? 'text-[#A0A6B0]/50 bg-gradient-to-t from-[#0F1115] to-transparent' : 'text-gray-400 bg-gradient-to-t from-[#F8F9FB] to-transparent'}`}>
+      <footer className={`fixed bottom-0 left-0 right-0 py-3 text-center text-xs ${isDark ? 'text-[#4B5563] bg-gradient-to-t from-[#0F1115] to-transparent' : 'text-gray-400 bg-gradient-to-t from-[#F8F9FB] to-transparent'}`}>
         <span>BuyWise • Professional Wholesale Deal Analyzer</span>
       </footer>
     </div>
