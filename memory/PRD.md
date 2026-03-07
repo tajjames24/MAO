@@ -3,6 +3,14 @@
 ## Product Overview
 A professional real estate wholesale deal analyzer that helps real estate investors quickly calculate Maximum Allowable Offers (MAO), estimate repair costs, and analyze deal profitability.
 
+## UI Design (December 2025)
+- **Theme**: Dark gradient backgrounds with orange accents (#FF7A00)
+- **Cards**: Rounded corners (2xl), gradient backgrounds, subtle borders
+- **Icons**: Each input/section has an icon for visual hierarchy
+- **Deal Rating**: Semi-circular gauge showing 0-100 score with color gradient
+- **Typography**: Inter font, bold weights for emphasis
+- **Tabs**: Pill-shaped with gradient active state and shadow
+
 ## Core Features
 
 ### 1. Wholesale Deal Calculator
