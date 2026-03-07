@@ -42,15 +42,13 @@ function DealGauge({ score, isDark }) {
   return (
     <div className="flex flex-col items-center">
       <div className="relative w-44 h-24">
-        {/* Glow effect */}
         <div className="absolute inset-0 blur-xl opacity-50" style={{ background: `radial-gradient(ellipse at center bottom, ${colorInfo.glow}, transparent 70%)` }} />
         
-        {/* Background arc */}
         <svg viewBox="0 0 200 110" className="w-full h-full">
           <defs>
             <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor={isDark ? '#2A2F3A' : '#E5E7EB'} />
-              <stop offset="100%" stopColor={isDark ? '#2A2F3A' : '#E5E7EB'} />
+              <stop offset="0%" stopColor={isDark ? '#1A1D24' : '#E5E7EB'} />
+              <stop offset="100%" stopColor={isDark ? '#1A1D24' : '#E5E7EB'} />
             </linearGradient>
             <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#22c55e" />
@@ -66,40 +64,21 @@ function DealGauge({ score, isDark }) {
             </filter>
           </defs>
           
-          {/* Background track */}
-          <path
-            d="M 15 100 A 85 85 0 0 1 185 100"
-            fill="none"
-            stroke="url(#bgGradient)"
-            strokeWidth="12"
-            strokeLinecap="round"
-          />
+          <path d="M 15 100 A 85 85 0 0 1 185 100" fill="none" stroke="url(#bgGradient)" strokeWidth="12" strokeLinecap="round" />
+          <path d="M 15 100 A 85 85 0 0 1 185 100" fill="none" stroke="url(#gaugeGradient)" strokeWidth="12" strokeLinecap="round" strokeDasharray={`${(normalizedScore / 100) * 267} 267`} filter="url(#glow)" />
           
-          {/* Colored arc */}
-          <path
-            d="M 15 100 A 85 85 0 0 1 185 100"
-            fill="none"
-            stroke="url(#gaugeGradient)"
-            strokeWidth="12"
-            strokeLinecap="round"
-            strokeDasharray={`${(normalizedScore / 100) * 267} 267`}
-            filter="url(#glow)"
-          />
-          
-          {/* Needle */}
           <g transform={`rotate(${rotation}, 100, 100)`} style={{ transition: 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
-            <line x1="100" y1="100" x2="100" y2="30" stroke={isDark ? '#fff' : '#1A1D24'} strokeWidth="3" strokeLinecap="round" />
-            <circle cx="100" cy="100" r="8" fill={isDark ? '#fff' : '#1A1D24'} />
+            <line x1="100" y1="100" x2="100" y2="30" stroke={isDark ? '#E5E5E5' : '#1A1D24'} strokeWidth="3" strokeLinecap="round" />
+            <circle cx="100" cy="100" r="8" fill={isDark ? '#E5E5E5' : '#1A1D24'} />
             <circle cx="100" cy="100" r="4" fill={colorInfo.fill} />
           </g>
         </svg>
       </div>
       
-      {/* Score display */}
       <div className="text-center -mt-4 relative z-10">
         <div className="flex items-baseline justify-center gap-1">
-          <span className={`text-5xl font-black tabular-nums ${isDark ? 'text-white' : 'text-gray-900'}`}>{Math.round(normalizedScore)}</span>
-          <span className={`text-xl font-medium ${isDark ? 'text-[#A0A6B0]' : 'text-gray-400'}`}>/100</span>
+          <span className={`text-5xl font-black tabular-nums ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>{Math.round(normalizedScore)}</span>
+          <span className={`text-xl font-medium ${isDark ? 'text-[#4B5563]' : 'text-gray-400'}`}>/100</span>
         </div>
         <p className="text-sm font-semibold mt-1" style={{ color: colorInfo.fill }}>{colorInfo.label}</p>
       </div>
@@ -114,7 +93,7 @@ function GlassCard({ children, className = '', glow = false, isDark }) {
       {glow && isDark && (
         <div className="absolute -inset-px bg-gradient-to-b from-[#FF7A1A]/20 to-transparent rounded-2xl pointer-events-none" />
       )}
-      <div className={`relative h-full ${isDark ? 'bg-[#1A1D24]/80 backdrop-blur-xl border border-[#2A2F3A]' : 'bg-white border border-gray-200 shadow-xl shadow-gray-200/50'} rounded-2xl`}>
+      <div className={`relative h-full ${isDark ? 'bg-[#1A1D24] border border-[#252830]' : 'bg-white border border-gray-200 shadow-xl shadow-gray-200/50'} rounded-2xl`}>
         {children}
       </div>
     </div>
@@ -124,15 +103,15 @@ function GlassCard({ children, className = '', glow = false, isDark }) {
 // Input Field with Icon
 function InputField({ label, value, onChange, placeholder, testId, icon: Icon, isDark }) {
   return (
-    <div className={`group relative rounded-xl transition-all duration-200 ${isDark ? 'bg-[#0F1115] border border-[#2A2F3A] hover:border-[#FF7A1A]/50 focus-within:border-[#FF7A1A] focus-within:shadow-lg focus-within:shadow-[#FF7A1A]/10' : 'bg-gray-50 border border-gray-200 hover:border-gray-300 focus-within:border-[#FF7A1A] focus-within:shadow-lg focus-within:shadow-[#FF7A1A]/10'}`}>
+    <div className={`group relative rounded-xl transition-all duration-200 ${isDark ? 'bg-[#0F1115] border border-[#252830] hover:border-[#FF7A1A]/50 focus-within:border-[#FF7A1A] focus-within:shadow-lg focus-within:shadow-[#FF7A1A]/10' : 'bg-gray-50 border border-gray-200 hover:border-gray-300 focus-within:border-[#FF7A1A] focus-within:shadow-lg focus-within:shadow-[#FF7A1A]/10'}`}>
       <div className="flex items-center gap-3 p-4">
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${isDark ? 'bg-[#1A1D24] group-focus-within:bg-[#FF7A1A]/20' : 'bg-gray-100 group-focus-within:bg-[#FF7A1A]/10'}`}>
-          <Icon className={`w-5 h-5 transition-colors ${isDark ? 'text-[#A0A6B0] group-focus-within:text-[#FF7A1A]' : 'text-gray-400 group-focus-within:text-[#FF7A1A]'}`} />
+          <Icon className={`w-5 h-5 transition-colors ${isDark ? 'text-[#6B7280] group-focus-within:text-[#FF7A1A]' : 'text-gray-400 group-focus-within:text-[#FF7A1A]'}`} />
         </div>
         <div className="flex-1 min-w-0">
-          <label className={`text-xs font-medium uppercase tracking-wider ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>{label}</label>
+          <label className={`text-xs font-medium uppercase tracking-wider ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>{label}</label>
           <div className="flex items-center gap-1 mt-0.5">
-            <span className={`font-semibold ${isDark ? 'text-[#A0A6B0]' : 'text-gray-400'}`}>$</span>
+            <span className={`font-semibold ${isDark ? 'text-[#6B7280]' : 'text-gray-400'}`}>$</span>
             <input
               data-testid={testId}
               type="text"
@@ -140,7 +119,7 @@ function InputField({ label, value, onChange, placeholder, testId, icon: Icon, i
               value={formatInput(value)}
               onChange={e => onChange(e.target.value.replace(/[^0-9.]/g, ''))}
               placeholder={placeholder || '0'}
-              className={`w-full bg-transparent font-bold text-xl focus:outline-none placeholder:opacity-30 ${isDark ? 'text-white placeholder:text-white' : 'text-gray-900 placeholder:text-gray-400'}`}
+              className={`w-full bg-transparent font-bold text-xl focus:outline-none placeholder:opacity-30 ${isDark ? 'text-[#E5E5E5] placeholder:text-[#4B5563]' : 'text-gray-900 placeholder:text-gray-400'}`}
             />
           </div>
         </div>
@@ -154,18 +133,18 @@ function StatsCard({ label, value, icon: Icon, highlight, isDark, subtext }) {
   return (
     <div className={`relative rounded-xl p-4 transition-all duration-200 ${highlight 
       ? 'bg-gradient-to-br from-[#FF7A1A] to-[#FF9A3C] shadow-lg shadow-[#FF7A1A]/30' 
-      : isDark ? 'bg-[#0F1115] border border-[#2A2F3A]' : 'bg-gray-50 border border-gray-100'}`}>
+      : isDark ? 'bg-[#1A1D24] border border-[#252830]' : 'bg-white border border-gray-100 shadow-sm'}`}>
       {highlight && (
         <div className="absolute top-2 right-2">
           <Sparkles className="w-4 h-4 text-white/50" />
         </div>
       )}
       <div className="flex items-center gap-3 mb-2">
-        <Icon className={`w-5 h-5 ${highlight ? 'text-white/70' : isDark ? 'text-[#A0A6B0]' : 'text-gray-400'}`} />
-        <span className={`text-xs font-medium uppercase tracking-wider ${highlight ? 'text-white/70' : isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>{label}</span>
+        <Icon className={`w-5 h-5 ${highlight ? 'text-white/70' : isDark ? 'text-[#6B7280]' : 'text-gray-400'}`} />
+        <span className={`text-xs font-medium uppercase tracking-wider ${highlight ? 'text-white/70' : isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>{label}</span>
       </div>
-      <p className={`text-2xl font-black ${highlight ? 'text-white' : isDark ? 'text-white' : 'text-gray-900'}`}>{fmt(value)}</p>
-      {subtext && <p className={`text-xs mt-1 ${highlight ? 'text-white/60' : isDark ? 'text-[#A0A6B0]' : 'text-gray-400'}`}>{subtext}</p>}
+      <p className={`text-2xl font-black ${highlight ? 'text-white' : isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>{fmt(value)}</p>
+      {subtext && <p className={`text-xs mt-1 ${highlight ? 'text-white/60' : isDark ? 'text-[#4B5563]' : 'text-gray-400'}`}>{subtext}</p>}
     </div>
   );
 }
@@ -330,17 +309,15 @@ Deal Score: ${calcs.dealScore.label || 'N/A'}
 
   return (
     <div className="space-y-6">
-      {/* Stats Preview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatsCard label="After Repair Value" value={parseFloat(inputs.arv) || 0} icon={Home} isDark={isDark} subtext="Target sale price" />
-        <StatsCard label="Maximum Allowable Offer" value={calcs.mao} icon={ShoppingCart} highlight isDark={isDark} subtext="Your max purchase price" />
-        <StatsCard label="Estimated Profit" value={calcs.investorProfit} icon={TrendingUp} isDark={isDark} subtext={`${calcs.investorProfitPct.toFixed(1)}% margin`} />
-      </div>
-
-      {/* Saved Deals Button */}
-      <div className="flex justify-end">
+      {/* TOP: Save Deal & Saved Deals Buttons */}
+      <div className="flex items-center justify-between">
+        <button data-testid="save-deal-btn" onClick={handleSaveDeal}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-[#FF7A1A] to-[#FF9A3C] text-white hover:shadow-lg hover:shadow-[#FF7A1A]/30 transition-all duration-200">
+          <Save className="w-4 h-4" />
+          Save Deal
+        </button>
         <button data-testid="saved-deals-header-btn" onClick={() => setShowSavedDeals(true)}
-          className={`flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 ${isDark ? 'text-[#A0A6B0] hover:text-white hover:bg-[#1A1D24]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'}`}>
+          className={`flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 ${isDark ? 'text-[#6B7280] hover:text-[#E5E5E5] hover:bg-[#1A1D24]' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'}`}>
           <BookOpen className="w-4 h-4" />
           <span>Saved Deals</span>
           {savedDeals.length > 0 && (
@@ -359,8 +336,8 @@ Deal Score: ${calcs.dealScore.label || 'N/A'}
                   <Home className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className={`font-bold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>Property Details</h3>
-                  <p className={`text-xs ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>Enter your deal information</p>
+                  <h3 className={`font-bold text-lg ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>Property Details</h3>
+                  <p className={`text-xs ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>Enter your deal information</p>
                 </div>
               </div>
 
@@ -372,35 +349,35 @@ Deal Score: ${calcs.dealScore.label || 'N/A'}
             </div>
 
             {/* Advanced Options */}
-            <div className={`border-t ${isDark ? 'border-[#2A2F3A]' : 'border-gray-200'}`}>
+            <div className={`border-t ${isDark ? 'border-[#252830]' : 'border-gray-200'}`}>
               <button data-testid="advanced-options-toggle" onClick={() => setShowAdvanced(!showAdvanced)}
-                className={`w-full flex items-center justify-between p-4 transition-colors ${isDark ? 'hover:bg-white/5' : 'hover:bg-gray-50'}`}>
-                <span className={`text-sm font-semibold ${isDark ? 'text-[#A0A6B0]' : 'text-gray-600'}`}>Advanced Options</span>
-                <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${showAdvanced ? 'bg-[#FF7A1A] text-white rotate-180' : isDark ? 'bg-[#0F1115] text-[#A0A6B0]' : 'bg-gray-100 text-gray-400'}`}>
+                className={`w-full flex items-center justify-between p-4 transition-colors ${isDark ? 'hover:bg-[#0F1115]' : 'hover:bg-gray-50'}`}>
+                <span className={`text-sm font-semibold ${isDark ? 'text-[#6B7280]' : 'text-gray-600'}`}>Advanced Options</span>
+                <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${showAdvanced ? 'bg-[#FF7A1A] text-white rotate-180' : isDark ? 'bg-[#0F1115] text-[#6B7280]' : 'bg-gray-100 text-gray-400'}`}>
                   <ChevronDown className="w-4 h-4" />
                 </div>
               </button>
               {showAdvanced && (
-                <div className={`p-5 space-y-5 ${isDark ? 'bg-[#0F1115]/50' : 'bg-gray-50'}`}>
+                <div className={`p-5 space-y-5 ${isDark ? 'bg-[#0F1115]' : 'bg-gray-50'}`}>
                   <div className="space-y-3">
-                    <label className={`text-sm font-medium ${isDark ? 'text-[#A0A6B0]' : 'text-gray-600'}`}>ARV Rule %</label>
+                    <label className={`text-sm font-medium ${isDark ? 'text-[#6B7280]' : 'text-gray-600'}`}>ARV Rule %</label>
                     <div className="flex items-center gap-4">
                       <input data-testid="arv-rule-percent-slider" type="range" min="60" max="85" step="1"
                         value={inputs.arvRulePercent || 70} onChange={e => setField('arvRulePercent')(e.target.value)}
                         className="flex-1 h-2 rounded-full appearance-none cursor-pointer accent-[#FF7A1A]" 
-                        style={{ background: isDark ? `linear-gradient(to right, #FF7A1A ${((inputs.arvRulePercent - 60) / 25) * 100}%, #2A2F3A ${((inputs.arvRulePercent - 60) / 25) * 100}%)` : `linear-gradient(to right, #FF7A1A ${((inputs.arvRulePercent - 60) / 25) * 100}%, #E5E7EB ${((inputs.arvRulePercent - 60) / 25) * 100}%)` }} />
+                        style={{ background: isDark ? `linear-gradient(to right, #FF7A1A ${((inputs.arvRulePercent - 60) / 25) * 100}%, #252830 ${((inputs.arvRulePercent - 60) / 25) * 100}%)` : `linear-gradient(to right, #FF7A1A ${((inputs.arvRulePercent - 60) / 25) * 100}%, #E5E7EB ${((inputs.arvRulePercent - 60) / 25) * 100}%)` }} />
                       <div className="bg-gradient-to-r from-[#FF7A1A] to-[#FF9A3C] text-white px-3 py-2 min-w-[56px] text-center font-bold rounded-lg text-sm">
                         {inputs.arvRulePercent || 70}%
                       </div>
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <label className={`text-sm font-medium ${isDark ? 'text-[#A0A6B0]' : 'text-gray-600'}`}>Negotiation Discount</label>
+                    <label className={`text-sm font-medium ${isDark ? 'text-[#6B7280]' : 'text-gray-600'}`}>Negotiation Discount</label>
                     <div className="relative">
                       <input data-testid="negotiation-discount-input" type="text" inputMode="numeric"
                         value={inputs.negotiationDiscount} onChange={e => setField('negotiationDiscount')(e.target.value.replace(/[^0-9.]/g, ''))}
-                        className={`w-full font-semibold text-lg py-3 px-4 pr-12 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF7A1A] transition-all ${isDark ? 'bg-[#1A1D24] text-white border border-[#2A2F3A]' : 'bg-white text-gray-900 border border-gray-200'}`} />
-                      <span className={`absolute right-4 top-1/2 -translate-y-1/2 font-bold ${isDark ? 'text-[#A0A6B0]' : 'text-gray-400'}`}>%</span>
+                        className={`w-full font-semibold text-lg py-3 px-4 pr-12 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF7A1A] transition-all ${isDark ? 'bg-[#1A1D24] text-[#E5E5E5] border border-[#252830]' : 'bg-white text-gray-900 border border-gray-200'}`} />
+                      <span className={`absolute right-4 top-1/2 -translate-y-1/2 font-bold ${isDark ? 'text-[#6B7280]' : 'text-gray-400'}`}>%</span>
                     </div>
                   </div>
                 </div>
@@ -409,24 +386,19 @@ Deal Score: ${calcs.dealScore.label || 'N/A'}
           </GlassCard>
 
           {/* Action Buttons */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <button data-testid="reset-btn" onClick={handleReset}
-              className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 ${isDark ? 'bg-[#1A1D24] text-[#A0A6B0] hover:text-white hover:bg-[#2A2F3A] border border-[#2A2F3A]' : 'bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-50 border border-gray-200 shadow-sm'}`}>
+              className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 ${isDark ? 'bg-[#1A1D24] text-[#6B7280] hover:text-[#E5E5E5] hover:bg-[#252830] border border-[#252830]' : 'bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-50 border border-gray-200 shadow-sm'}`}>
               <RotateCcw className="w-4 h-4" />
               Reset
             </button>
-            <button data-testid="save-deal-btn" onClick={handleSaveDeal}
-              className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm bg-gradient-to-r from-[#FF7A1A] to-[#FF9A3C] text-white hover:shadow-lg hover:shadow-[#FF7A1A]/30 transition-all duration-200">
-              <Save className="w-4 h-4" />
-              Save
-            </button>
             <button data-testid="export-pdf-btn" onClick={exportPDF}
-              className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 ${isDark ? 'bg-[#1A1D24] text-[#A0A6B0] hover:text-white hover:bg-[#2A2F3A] border border-[#2A2F3A]' : 'bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-50 border border-gray-200 shadow-sm'}`}>
+              className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 ${isDark ? 'bg-[#1A1D24] text-[#6B7280] hover:text-[#E5E5E5] hover:bg-[#252830] border border-[#252830]' : 'bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-50 border border-gray-200 shadow-sm'}`}>
               <FileText className="w-4 h-4" />
-              PDF
+              Export PDF
             </button>
             <button data-testid="copy-clipboard-btn" onClick={copyToClipboard}
-              className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 ${isDark ? 'bg-[#1A1D24] text-[#A0A6B0] hover:text-white hover:bg-[#2A2F3A] border border-[#2A2F3A]' : 'bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-50 border border-gray-200 shadow-sm'}`}>
+              className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 ${isDark ? 'bg-[#1A1D24] text-[#6B7280] hover:text-[#E5E5E5] hover:bg-[#252830] border border-[#252830]' : 'bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-50 border border-gray-200 shadow-sm'}`}>
               <Copy className="w-4 h-4" />
               Copy
             </button>
@@ -443,8 +415,8 @@ Deal Score: ${calcs.dealScore.label || 'N/A'}
                   <TrendingUp className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className={`font-bold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>Deal Rating</h3>
-                  <p className={`text-xs ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>Overall deal quality</p>
+                  <h3 className={`font-bold text-lg ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>Deal Rating</h3>
+                  <p className={`text-xs ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>Overall deal quality</p>
                 </div>
               </div>
               
@@ -457,11 +429,11 @@ Deal Score: ${calcs.dealScore.label || 'N/A'}
             <div className="p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? 'bg-[#0F1115]' : 'bg-gray-100'}`}>
-                  <ShoppingCart className={`w-5 h-5 ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`} />
+                  <ShoppingCart className={`w-5 h-5 ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`} />
                 </div>
                 <div>
-                  <h3 className={`font-bold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}>Offer Summary</h3>
-                  <p className={`text-xs ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>Key calculations</p>
+                  <h3 className={`font-bold text-lg ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>Offer Summary</h3>
+                  <p className={`text-xs ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>Key calculations</p>
                 </div>
               </div>
 
@@ -474,10 +446,10 @@ Deal Score: ${calcs.dealScore.label || 'N/A'}
                 ].map(item => (
                   <div key={item.label} className={`flex items-center justify-between p-3 rounded-xl transition-all ${item.highlight ? 'bg-gradient-to-r from-[#FF7A1A]/10 to-[#FF9A3C]/10 border border-[#FF7A1A]/30' : isDark ? 'bg-[#0F1115]' : 'bg-gray-50'}`}>
                     <div className="flex items-center gap-2">
-                      <item.icon className={`w-4 h-4 ${item.highlight ? 'text-[#FF7A1A]' : isDark ? 'text-[#A0A6B0]' : 'text-gray-400'}`} />
-                      <span className={`text-sm font-medium ${isDark ? 'text-[#A0A6B0]' : 'text-gray-600'}`}>{item.label}</span>
+                      <item.icon className={`w-4 h-4 ${item.highlight ? 'text-[#FF7A1A]' : isDark ? 'text-[#6B7280]' : 'text-gray-400'}`} />
+                      <span className={`text-sm font-medium ${isDark ? 'text-[#6B7280]' : 'text-gray-600'}`}>{item.label}</span>
                     </div>
-                    <span className={`font-bold ${item.highlight ? 'text-[#FF7A1A]' : isDark ? 'text-white' : 'text-gray-900'}`}>{fmt(item.value)}</span>
+                    <span className={`font-bold ${item.highlight ? 'text-[#FF7A1A]' : isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>{fmt(item.value)}</span>
                   </div>
                 ))}
               </div>
@@ -486,29 +458,36 @@ Deal Score: ${calcs.dealScore.label || 'N/A'}
         </div>
       </div>
 
+      {/* BOTTOM: Stats Preview Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+        <StatsCard label="After Repair Value" value={parseFloat(inputs.arv) || 0} icon={Home} isDark={isDark} subtext="Target sale price" />
+        <StatsCard label="Maximum Allowable Offer" value={calcs.mao} icon={ShoppingCart} highlight isDark={isDark} subtext="Your max purchase price" />
+        <StatsCard label="Estimated Profit" value={calcs.investorProfit} icon={TrendingUp} isDark={isDark} subtext={`${calcs.investorProfitPct.toFixed(1)}% margin`} />
+      </div>
+
       {/* Save Modal */}
       {showSaveModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowSaveModal(false)}>
-          <div className={`rounded-2xl p-6 w-full max-w-md shadow-2xl ${isDark ? 'bg-[#1A1D24] border border-[#2A2F3A]' : 'bg-white'}`} onClick={e => e.stopPropagation()}>
+          <div className={`rounded-2xl p-6 w-full max-w-md shadow-2xl ${isDark ? 'bg-[#1A1D24] border border-[#252830]' : 'bg-white'}`} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
-              <h3 className={`font-bold text-xl ${isDark ? 'text-white' : 'text-gray-900'}`}>Save Deal</h3>
+              <h3 className={`font-bold text-xl ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>Save Deal</h3>
               <button onClick={() => setShowSaveModal(false)} className={`p-2 rounded-xl transition-colors ${isDark ? 'hover:bg-[#0F1115]' : 'hover:bg-gray-100'}`}>
-                <X className="w-5 h-5" />
+                <X className={`w-5 h-5 ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`} />
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-[#A0A6B0]' : 'text-gray-600'}`}>Deal Name</label>
+                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-[#6B7280]' : 'text-gray-600'}`}>Deal Name</label>
                 <input type="text" data-testid="deal-name-input" value={dealName} onChange={e => setDealName(e.target.value)} onKeyDown={e => e.key === 'Enter' && confirmSave()}
-                  className={`w-full font-semibold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF7A1A] ${isDark ? 'bg-[#0F1115] text-white border border-[#2A2F3A]' : 'bg-gray-50 text-gray-900 border border-gray-200'}`} autoFocus />
+                  className={`w-full font-semibold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF7A1A] ${isDark ? 'bg-[#0F1115] text-[#E5E5E5] border border-[#252830]' : 'bg-gray-50 text-gray-900 border border-gray-200'}`} autoFocus />
               </div>
               <div className={`p-4 rounded-xl space-y-2 ${isDark ? 'bg-[#0F1115]' : 'bg-gray-50'}`}>
                 <div className="flex justify-between text-sm">
-                  <span className={isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}>MAO</span>
+                  <span className={isDark ? 'text-[#6B7280]' : 'text-gray-500'}>MAO</span>
                   <strong className="text-[#FF7A1A]">{fmt(calcs.mao)}</strong>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className={isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}>Score</span>
+                  <span className={isDark ? 'text-[#6B7280]' : 'text-gray-500'}>Score</span>
                   <strong className={calcs.dealScore.color === 'green' ? 'text-green-500' : calcs.dealScore.color === 'yellow' ? 'text-yellow-500' : 'text-red-500'}>
                     {calcs.dealScore.label || 'N/A'}
                   </strong>
@@ -518,7 +497,7 @@ Deal Score: ${calcs.dealScore.label || 'N/A'}
                 <button data-testid="confirm-save-btn" onClick={confirmSave} className="flex-1 bg-gradient-to-r from-[#FF7A1A] to-[#FF9A3C] text-white font-bold py-3 rounded-xl hover:shadow-lg hover:shadow-[#FF7A1A]/30 transition-all">
                   Save Deal
                 </button>
-                <button onClick={() => setShowSaveModal(false)} className={`px-6 font-bold py-3 rounded-xl transition-all ${isDark ? 'bg-[#0F1115] text-[#A0A6B0] hover:bg-[#2A2F3A]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                <button onClick={() => setShowSaveModal(false)} className={`px-6 font-bold py-3 rounded-xl transition-all ${isDark ? 'bg-[#0F1115] text-[#6B7280] hover:bg-[#252830]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
                   Cancel
                 </button>
               </div>
@@ -530,27 +509,27 @@ Deal Score: ${calcs.dealScore.label || 'N/A'}
       {/* Saved Deals Modal */}
       {showSavedDeals && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowSavedDeals(false)}>
-          <div className={`rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl ${isDark ? 'bg-[#1A1D24] border border-[#2A2F3A]' : 'bg-white'}`} onClick={e => e.stopPropagation()}>
-            <div className={`flex items-center justify-between p-5 border-b ${isDark ? 'border-[#2A2F3A]' : 'border-gray-200'}`}>
-              <h3 className={`font-bold text-xl ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <div className={`rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl ${isDark ? 'bg-[#1A1D24] border border-[#252830]' : 'bg-white'}`} onClick={e => e.stopPropagation()}>
+            <div className={`flex items-center justify-between p-5 border-b ${isDark ? 'border-[#252830]' : 'border-gray-200'}`}>
+              <h3 className={`font-bold text-xl ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>
                 Saved Deals <span className="text-[#FF7A1A]">({savedDeals.length})</span>
               </h3>
               <button data-testid="close-saved-deals-btn" onClick={() => setShowSavedDeals(false)} className={`p-2 rounded-xl transition-colors ${isDark ? 'hover:bg-[#0F1115]' : 'hover:bg-gray-100'}`}>
-                <X className="w-5 h-5" />
+                <X className={`w-5 h-5 ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`} />
               </button>
             </div>
             <div className="overflow-y-auto flex-1 p-4 space-y-3">
               {savedDeals.length === 0 ? (
                 <div className="text-center py-16">
-                  <BookOpen className={`w-12 h-12 mx-auto mb-3 ${isDark ? 'text-[#2A2F3A]' : 'text-gray-300'}`} />
-                  <p className={`font-medium ${isDark ? 'text-[#A0A6B0]' : 'text-gray-400'}`}>No saved deals yet</p>
+                  <BookOpen className={`w-12 h-12 mx-auto mb-3 ${isDark ? 'text-[#252830]' : 'text-gray-300'}`} />
+                  <p className={`font-medium ${isDark ? 'text-[#6B7280]' : 'text-gray-400'}`}>No saved deals yet</p>
                 </div>
               ) : (
                 savedDeals.map(deal => (
                   <div key={deal.id} data-testid="saved-deal-item" className={`p-4 rounded-xl flex items-center justify-between transition-colors ${isDark ? 'bg-[#0F1115] hover:bg-[#0F1115]/80' : 'bg-gray-50 hover:bg-gray-100'}`}>
                     <div className="min-w-0">
-                      <p className={`font-bold truncate ${isDark ? 'text-white' : 'text-gray-900'}`}>{deal.name}</p>
-                      <p className={`text-xs ${isDark ? 'text-[#A0A6B0]' : 'text-gray-500'}`}>{new Date(deal.date).toLocaleDateString()}</p>
+                      <p className={`font-bold truncate ${isDark ? 'text-[#E5E5E5]' : 'text-gray-900'}`}>{deal.name}</p>
+                      <p className={`text-xs ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`}>{new Date(deal.date).toLocaleDateString()}</p>
                       <p className="text-sm mt-1">MAO: <strong className="text-[#FF7A1A]">{fmt(deal.mao)}</strong></p>
                     </div>
                     <div className="flex items-center gap-3 shrink-0 ml-3">
@@ -560,7 +539,7 @@ Deal Score: ${calcs.dealScore.label || 'N/A'}
                         : 'bg-red-500/20 text-red-400'
                       }`}>{deal.dealScore || 'N/A'}</span>
                       <button data-testid="delete-deal-btn" onClick={() => deleteDeal(deal.id)} className={`p-2 rounded-xl transition-colors ${isDark ? 'hover:bg-red-500/20' : 'hover:bg-red-50'} hover:text-red-500`}>
-                        <X className="w-4 h-4" />
+                        <X className={`w-4 h-4 ${isDark ? 'text-[#6B7280]' : 'text-gray-500'}`} />
                       </button>
                     </div>
                   </div>
