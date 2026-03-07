@@ -47,14 +47,14 @@ Expandable checklist with individual repair costs:
 - **Other**: Demo ($1,500), Cleaning ($350)
 
 #### Reference Table
-Shows typical repair costs by property size:
+Shows typical repair costs by property size - **CLICKABLE** to send directly to Calculator:
 - Under 1,500 sqft: Light=$18,750, Medium=$37,500, Heavy=$70,000
 - 1,500–2,500 sqft: Light=$25,000, Medium=$50,000, Heavy=$90,000
 - 2,500–3,500 sqft: Light=$37,500, Medium=$62,500, Heavy=$125,000
 
-#### Sync to Calculator
-- One-click button to transfer the estimated repair cost to the main calculator
-- Shows toast notification on successful sync
+#### Behavior
+- **Sync to Calculator**: One-click button to transfer repair cost to main calculator
+- **Auto-Reset**: Quick Estimate (sqft and rehab level) automatically resets when selecting Advanced Itemized repairs
 
 ### 3. UI/UX Features
 - **Tab Navigation**: Switch between Calculator and Repair Estimator
